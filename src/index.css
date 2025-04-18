@@ -1,0 +1,160 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+
+@import "tailwindcss";
+
+/* Define the dark variant for Tailwind CSS 4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Primary color (green) */
+  --color-primary-50: #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-200: #bbf7d0;
+  --color-primary-300: #86efac;
+  --color-primary-400: #4ade80;
+  --color-primary-500: #22c55e;
+  --color-primary-600: #16a34a;
+  --color-primary-700: #15803d;
+  --color-primary-800: #166534;
+  --color-primary-900: #14532d;
+  --color-primary-950: #052e16;
+
+  /* Main primary color - the one used most often */
+  --color-primary: var(--color-primary-500);
+
+  /* Secondary color (blue) */
+  --color-secondary-50: #eff6ff;
+  --color-secondary-100: #dbeafe;
+  --color-secondary-200: #bfdbfe;
+  --color-secondary-300: #93c5fd;
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: #3b82f6;
+  --color-secondary-600: #2563eb;
+  --color-secondary-700: #1d4ed8;
+  --color-secondary-800: #1e40af;
+  --color-secondary-900: #1e3a8a;
+  --color-secondary-950: #172554;
+
+  /* Main secondary color */
+  --color-secondary: var(--color-secondary-500);
+
+  /* Tertiary color (purple) */
+  --color-tertiary-50: #faf5ff;
+  --color-tertiary-100: #f3e8ff;
+  --color-tertiary-200: #e9d5ff;
+  --color-tertiary-300: #d8b4fe;
+  --color-tertiary-400: #c084fc;
+  --color-tertiary-500: #a855f7;
+  --color-tertiary-600: #9333ea;
+  --color-tertiary-700: #7e22ce;
+  --color-tertiary-800: #6b21a8;
+  --color-tertiary-900: #581c87;
+  --color-tertiary-950: #3b0764;
+
+  /* Main tertiary color */
+  --color-tertiary: var(--color-tertiary-500);
+
+  /* Accent color (amber) */
+  --color-accent-50: #fffbeb;
+  --color-accent-100: #fef3c7;
+  --color-accent-200: #fde68a;
+  --color-accent-300: #fcd34d;
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #d97706;
+  --color-accent-700: #b45309;
+  --color-accent-800: #92400e;
+  --color-accent-900: #78350f;
+  --color-accent-950: #451a03;
+
+  /* Main accent color */
+  --color-accent: var(--color-accent-500);
+
+  /* Gray scale */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
+
+  /* Semantic colors */
+  --color-info: var(--color-secondary-500);
+  --color-success: var(--color-primary-500);
+  --color-warning: var(--color-accent-500);
+  --color-error: #ef4444;
+
+  /* Light theme colors */
+  --color-light-bg: var(--color-gray-50);
+  --color-light-text: var(--color-gray-900);
+  --color-light-border: var(--color-gray-200);
+
+  /* Dark theme colors */
+  --color-dark-bg: var(--color-gray-900);
+  --color-dark-text: var(--color-gray-50);
+  --color-dark-border: var(--color-gray-700);
+
+  /* Legacy colors - keeping for backward compatibility */
+  --color-light-100: #cecefb;
+  --color-light-200: #a8b5db;
+  --color-dark-100: #0f0d23;
+
+  /* Other variables */
+  --font-dm-sans: DM Sans, sans-serif;
+  --breakpoint-xs: 480px;
+  --background-image-hero-pattern: url("/hero-bg.png");
+}
+
+@layer base {
+  body {
+    font-family: "DM Sans", serif;
+    font-optical-sizing: auto;
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white;
+  }
+
+  h1 {
+    @apply mx-auto max-w-4xl text-center text-5xl font-bold leading-tight tracking-[-1%] text-white sm:text-[64px] sm:leading-[76px];
+  }
+
+  h2 {
+    @apply text-2xl font-bold text-white sm:text-3xl;
+  }
+
+  main {
+    @apply min-h-screen relative bg-gray-50 dark:bg-gray-900;
+  }
+
+  header {
+    @apply sm:mt-10 mt-5;
+  }
+
+  header img {
+    @apply w-full max-w-lg h-auto object-contain mx-auto drop-shadow-md;
+  }
+}
+
+@layer components {
+  .pattern {
+    @apply bg-hero-pattern w-screen h-screen bg-center bg-cover absolute z-0;
+  }
+
+  .input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+  }
+}
+
+
+@utility hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
