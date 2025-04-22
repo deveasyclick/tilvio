@@ -1,0 +1,7 @@
+/**
+ * Common option type for select components
+ */
+export type OptionType = {
+  value: string;
+  label: string;
+};
