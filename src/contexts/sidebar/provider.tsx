@@ -1,20 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react';
-import { useMediaQuery } from '../hooks/useMediaQuery';
-
-type SidebarContextType = {
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
-  closeSidebar: () => void;
-  openSidebar: () => void;
-};
-
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+import { useState, useEffect, ReactNode } from 'react';
+import useMediaQuery from '../../hooks/useMediaQuery';
+import { SidebarContext } from './context';
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   // Use our custom hook to check if we're on desktop
@@ -49,12 +35,4 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
       {children}
     </SidebarContext.Provider>
   );
-}
-
-export function useSidebar() {
-  const context = useContext(SidebarContext);
-  if (context === undefined) {
-    throw new Error('useSidebar must be used within a SidebarProvider');
-  }
-  return context;
 }

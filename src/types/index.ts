@@ -8,3 +8,5 @@ export type IconWrapperProps = {
 } & React.SVGProps<SVGSVGElement>;
 
 export type IconProps = React.SVGProps<SVGSVGElement>;
+
+export type Theme = 'light' | 'dark' | 'system';

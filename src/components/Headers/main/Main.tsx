@@ -9,8 +9,8 @@ import { MainHeaderProps } from './types';
 import Logo from './Logo';
 import SearchForm from './SearchForm';
 import HeaderButton from './HeaderButton';
-import { useSidebar } from '../../../contexts/SidebarContext';
 import ThemeToggle from '../../ThemeToggle';
+import { useSidebar } from '../../../contexts/sidebar/context';
 
 /**
  * Main header component for the application

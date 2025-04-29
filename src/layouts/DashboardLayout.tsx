@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Outlet } from 'react-router';
 import MainHeader from '../components/Headers/main/Main';
 import Sidebar from '../components/Sidebar/Sidebar';
-import { SidebarProvider } from '../contexts/SidebarContext';
+import { SidebarProvider } from '../contexts/sidebar';
 
 /**
  * Dashboard Layout Component

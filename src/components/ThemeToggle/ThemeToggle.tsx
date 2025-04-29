@@ -1,4 +1,4 @@
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../contexts/theme';
 import IconWrapper from '../IconWrapper/IconWrapper';
 
 type ThemeToggleProps = {
