@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import MainHeader from '../../components/Headers/main/Main';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import MainContent from '../../components/MainContent/MainContent';
-import { SidebarProvider } from '../../contexts/SidebarContext';
+import { SidebarProvider } from '../../contexts/sidebar';
 
 export default function Dashboard() {
   // Example callback handlers for user menu actions
