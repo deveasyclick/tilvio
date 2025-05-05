@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { DropdownItem } from '../../../../../components/Dropdown';
 import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
 import type { MenuItemData } from './userMenuData';
 
@@ -17,43 +16,44 @@ type MenuItemProps = {
  * @param props - Component props
  * @returns MenuItem component
  */
-const MenuItem = memo(({ item }: MenuItemProps) => {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (item.onClick) {
-      // If there's a click handler, prevent default navigation
-      e.preventDefault();
-      item.onClick();
-    }
-  };
+const MenuItem = memo(
+  ({
+    item: {
+      href,
+      onClick,
+      iconName,
+      iconColorClass,
+      //rightIconName,
+      isExternal,
+      label,
+    },
+  }: MenuItemProps) => {
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (onClick) {
+        // If there's a click handler, prevent default navigation
+        e.preventDefault();
+        onClick();
+      }
+    };
 
-  return (
-    <li>
-      <DropdownItem
-        href={item.href || '#'}
-        onClick={handleClick}
-        icon={
+    return (
+      <li>
+        <a
+          className="py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white flex items-center"
+          href={href}
+          onClick={handleClick}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noopener noreferrer' : undefined}>
           <IconWrapper
-            name={item.iconName}
-            className={`w-5 h-5 ${item.iconColorClass || 'text-gray-400'}`}
+            name={iconName}
+            className={`w-5 h-5 ${iconColorClass || 'text-gray-400'} mr-2`}
             aria-hidden="true"
           />
-        }
-        rightContent={
-          item.rightIconName ? (
-            <IconWrapper
-              name={item.rightIconName}
-              className="w-5 h-5 text-gray-400"
-              aria-hidden="true"
-            />
-          ) : undefined
-        }
-        justifyBetween={item.justifyBetween}
-        target={item.isExternal ? '_blank' : undefined}
-        rel={item.isExternal ? 'noopener noreferrer' : undefined}>
-        {item.label}
-      </DropdownItem>
-    </li>
-  );
-});
+          {label}
+        </a>
+      </li>
+    );
+  },
+);
 
 export default MenuItem;
