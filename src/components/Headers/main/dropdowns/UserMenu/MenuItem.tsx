@@ -17,17 +17,7 @@ type MenuItemProps = {
  * @returns MenuItem component
  */
 const MenuItem = memo(
-  ({
-    item: {
-      href,
-      onClick,
-      iconName,
-      iconColorClass,
-      //rightIconName,
-      isExternal,
-      label,
-    },
-  }: MenuItemProps) => {
+  ({ item: { href, onClick, iconName, isExternal, label } }: MenuItemProps) => {
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
       if (onClick) {
         // If there's a click handler, prevent default navigation
@@ -46,7 +36,7 @@ const MenuItem = memo(
           rel={isExternal ? 'noopener noreferrer' : undefined}>
           <IconWrapper
             name={iconName}
-            className={`w-5 h-5 ${iconColorClass || 'text-gray-400'} mr-2`}
+            className="w-5 h-5 text-gray-400 mr-2"
             aria-hidden="true"
           />
           {label}

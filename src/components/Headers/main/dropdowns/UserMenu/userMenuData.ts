@@ -7,10 +7,8 @@ export type MenuItemData = {
   id: string;
   label: string;
   iconName: IconNames;
-  iconColorClass?: string;
   href?: string;
   onClick?: () => void;
-  rightIconName?: IconNames;
   justifyBetween?: boolean;
   isExternal?: boolean;
 };
