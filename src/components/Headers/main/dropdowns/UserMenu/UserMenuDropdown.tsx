@@ -4,7 +4,9 @@ import HeaderDropdown from '../../HeaderDropdown';
 import Image from '../../../../Image';
 import { DEFAULT_IMAGES } from '../../../../../constants/images';
 import { DropdownProps } from '../../types';
-import { MenuItem, getDefaultMenuSections, UserMenuCallbacks } from './index';
+import { MenuItem, getDefaultMenuItems, UserMenuCallbacks } from './index';
+import { SignOutButton } from '@clerk/react-router';
+import IconWrapper from '../../../../IconWrapper/IconWrapper';
 
 /**
  * Props for user menu dropdown component
@@ -38,7 +40,7 @@ const UserMenuDropdown = memo(
     onSignOut,
   }: UserMenuDropdownProps) => {
     // Get menu sections with callback handlers
-    const menuSections = getDefaultMenuSections({
+    const menuItems = getDefaultMenuItems({
       onProfileClick,
       onSettingsClick,
       onLikesClick,
@@ -55,7 +57,7 @@ const UserMenuDropdown = memo(
         className="w-56"
         position="right">
         <DropdownHeader title="User Menu" />
-        <div className="py-3 px-4" role="presentation">
+        <div className="py-3 px-4">
           {userAvatarUrl && (
             <div className="flex items-center mb-3">
               <Image
@@ -75,16 +77,21 @@ const UserMenuDropdown = memo(
           </span>
         </div>
 
-        {menuSections.map((section) => (
-          <ul
-            key={section.id}
-            className="py-1 text-gray-700 dark:text-gray-300"
-            aria-label={section.ariaLabel}>
-            {section.items.map((item) => (
-              <MenuItem key={item.id} item={item} />
-            ))}
-          </ul>
-        ))}
+        <ul className="py-1 text-gray-700 dark:text-gray-300">
+          {menuItems.map((item) => (
+            <MenuItem key={item.id} item={item} />
+          ))}
+        </ul>
+        <SignOutButton redirectUrl="/signin">
+          <button className="py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white flex items-center w-full cursor-pointer">
+            <IconWrapper
+              name={'logout'}
+              className="w-5 h-5 text-gray-400 mr-2"
+              aria-hidden="true"
+            />
+            Sign out
+          </button>
+        </SignOutButton>
       </HeaderDropdown>
     );
   },
