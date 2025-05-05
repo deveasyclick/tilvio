@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 import MainHeader from '../components/Headers/main/Main';
 import Sidebar from '../components/Sidebar/Sidebar';
 import { SidebarProvider } from '../contexts/sidebar';
+import { useUser } from '@clerk/clerk-react';
 
 /**
  * Dashboard Layout Component
@@ -28,7 +29,7 @@ export default function DashboardLayout() {
     console.log('Sign out clicked in Dashboard');
     // Add authentication logout logic here
   }, []);
-
+  const { user } = useUser();
   return (
     <SidebarProvider>
       <div className="antialiased bg-gray-50 dark:bg-gray-900">
@@ -36,8 +37,8 @@ export default function DashboardLayout() {
           onProfileClick={handleProfileClick}
           onSettingsClick={handleSettingsClick}
           onSignOut={handleSignOut}
-          userName="John Doe"
-          userEmail="admin@dashboard.org"
+          userName={user?.firstName ?? ''}
+          userEmail={user?.primaryEmailAddress?.emailAddress ?? ''}
         />
         <Sidebar />
         <main className="p-4 md:ml-64 h-auto pt-20">
