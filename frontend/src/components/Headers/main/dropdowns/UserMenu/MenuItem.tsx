@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
+import IconWrapper from '../../../../IconWrapper/IconWrapper';
 import type { MenuItemData } from './userMenuData';
 
 /**
