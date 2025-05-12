@@ -1,5 +1,5 @@
 import { memo, useRef } from 'react';
-import { DropdownWrapper } from '../../../components/Dropdown';
+import { DropdownWrapper } from '../../Dropdown';
 import type { DropdownProps } from './types';
 import useClickOutside from '../../../hooks/useClickOutside';
 
