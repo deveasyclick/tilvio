@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run: 
+        working-directory: frontend
 
     steps:
     - uses: actions/checkout@v4
@@ -15,11 +18,8 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
     - name: Install dependencies
-      working-directory: frontend
       run: npm ci
     - name: Lint
-      working-directory: frontend
       run: npm run lint
     - name: Build
-      working-directory: frontend
       run: npm run build
