@@ -1,0 +1,11 @@
+bin/
+pkg/
+*.test
+*.exe
+tmp/
+frontend
+.gitattributes
+*.md
+*.toml
+node_modules/
+backend/main
