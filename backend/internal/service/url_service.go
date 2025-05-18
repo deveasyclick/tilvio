@@ -3,38 +3,15 @@ package service
 import (
 	"fmt"
 
-	"github.com/deveasyclick/tilvio/internal/config"
-	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/repository"
 )
 
 type URLService interface {
-	CreateShortURL(originalUrl string) (string, error)
 	GetOriginalURL(shortURL string) (string, error)
 }
 
 type urlService struct {
 	repo repository.URLRepository
-}
-
-func (s *urlService) CreateShortURL(longURL string) (string, error) {
-	// If the long URL does not exist, generate a new short code
-	shortCode := generateShortCode()
-
-	// Create a new URL model with the long URL and short code
-	// TODO: Set expiration time and remove expired urls from the database periodically
-	newURL := &models.URL{
-		OriginalUrl: longURL,
-		ShortCode:   shortCode,
-	}
-
-	// Save the new URL to the repository
-	err := s.repo.Create(newURL)
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf("%s/%s", config.APP_URL, shortCode), nil
 }
 
 func (s *urlService) GetOriginalURL(shortCode string) (string, error) {
