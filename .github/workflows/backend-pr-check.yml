@@ -1,4 +1,4 @@
-name: PR Check
+name: Backend PR Check
 on:
   pull_request:
     branches: [ 'main' ]
