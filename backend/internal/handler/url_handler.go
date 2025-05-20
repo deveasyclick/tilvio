@@ -12,10 +12,6 @@ type URLHandler struct {
 	service service.URLService
 }
 
-func NewURLHandler(service service.URLService) *URLHandler {
-	return &URLHandler{service: service}
-}
-
 func (h *URLHandler) CreateShortURL(w http.ResponseWriter, r *http.Request) {
 
 	// Set the Content-Type header and write the JSON response
@@ -25,4 +21,8 @@ func (h *URLHandler) CreateShortURL(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error encoding response", http.StatusInternalServerError)
 		return
 	}
+}
+
+func NewURLHandler(service service.URLService) *URLHandler {
+	return &URLHandler{service: service}
 }
