@@ -3,31 +3,27 @@ package service
 import (
 	"fmt"
 
+	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/repository"
 )
 
 type URLService interface {
-	GetOriginalURL(shortURL string) (string, error)
+	Create(url string) (*models.URL, error)
 }
 
 type urlService struct {
 	repo repository.URLRepository
 }
 
-func (s *urlService) GetOriginalURL(shortCode string) (string, error) {
+func (s *urlService) Create(url string) (*models.URL, error) {
 	// Find the URL with the given short code in the repository
-	url, err := s.repo.FindByShortURL(shortCode)
+	urlObject := &models.URL{}
+	err := s.repo.Create(urlObject)
 	if err != nil {
-		return "", fmt.Errorf("error retrieving URL from repository: %w", err)
+		return urlObject, fmt.Errorf("error retrieving URL from repository: %w", err)
 	}
 
-	if url == nil {
-		// If the short code does not exist, return an error
-		return "", fmt.Errorf("Short code not found")
-	}
-
-	// Return the long URL associated with the short code
-	return url.OriginalUrl, nil
+	return urlObject, nil
 }
 
 func NewURLService(repo repository.URLRepository) URLService {
