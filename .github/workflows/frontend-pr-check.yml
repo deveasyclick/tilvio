@@ -2,6 +2,9 @@ name: Frontend PR Check
 on:
   pull_request:
     branches: [ 'main' ]
+    paths:
+      - 'frontend/**'
+
 
 jobs:
   build:
