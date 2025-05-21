@@ -36,7 +36,18 @@ func New() *Service {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&models.URL{})
+	db.AutoMigrate(
+		&models.Customer{},
+		&models.Manufacturer{},
+		&models.Product{},
+		&models.PriceList{},
+		&models.PriceListItem{},
+		&models.Order{},
+		&models.OrderItem{},
+		&models.Distributor{},
+		&models.Workspace{},
+		&models.URL{},
+	)
 
 	slog.Info("Connected to database")
 
