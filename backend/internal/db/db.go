@@ -32,7 +32,7 @@ func New() *Service {
 	connStr := fmt.Sprintf("postgres://%s:%s@%s/%s", username, password, host, database)
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic("failed to connect database ")
 	}
 
 	// Migrate the schema
