@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { Outlet } from 'react-router';
-import MainHeader from '../components/Headers/main/Main';
 import Sidebar from '../components/Sidebar/Sidebar';
 import { SidebarProvider } from '../contexts/sidebar';
 import { useUser } from '@clerk/clerk-react';
+import DashboardHeader from '../components/Headers/main/Main';
 
 /**
  * Dashboard Layout Component
@@ -33,7 +33,7 @@ export default function DashboardLayout() {
   return (
     <SidebarProvider>
       <div className="antialiased bg-gray-50 dark:bg-gray-900">
-        <MainHeader
+        <DashboardHeader
           onProfileClick={handleProfileClick}
           onSettingsClick={handleSettingsClick}
           onSignOut={handleSignOut}
