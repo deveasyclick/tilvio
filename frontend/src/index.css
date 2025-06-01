@@ -122,7 +122,7 @@
   }
 
   h2 {
-    @apply text-2xl font-bold text-white sm:text-3xl;
+    @apply text-2xl font-bold text-gray-600 dark:text-white sm:text-3xl;
   }
 
   main {
@@ -133,11 +133,15 @@
     @apply sm:mt-10 mt-5;
   }
 
+  label {
+    @apply block text-gray-700 dark:text-gray-300 font-bold
+  }
+
 }
 
 @layer components {
-  .input {
-    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+  .text-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:outline-none
   }
 }
 

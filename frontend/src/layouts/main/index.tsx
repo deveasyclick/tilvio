@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import { Outlet } from 'react-router';
-import Sidebar from '../components/Sidebar/Sidebar';
-import { SidebarProvider } from '../contexts/sidebar';
+import MainHeader from './components/Header';
 import { useUser } from '@clerk/clerk-react';
-import DashboardHeader from '../components/Headers/main/Main';
 
 /**
  * Dashboard Layout Component
@@ -13,7 +11,7 @@ import DashboardHeader from '../components/Headers/main/Main';
  * - Sidebar navigation
  * - Main content area that renders child routes via Outlet
  */
-export default function DashboardLayout() {
+export default function MainLayout() {
   // Example callback handlers for user menu actions
   const handleProfileClick = useCallback(() => {
     console.log('Profile clicked in Dashboard');
@@ -31,20 +29,17 @@ export default function DashboardLayout() {
   }, []);
   const { user } = useUser();
   return (
-    <SidebarProvider>
-      <div className="antialiased bg-gray-50 dark:bg-gray-900">
-        <DashboardHeader
-          onProfileClick={handleProfileClick}
-          onSettingsClick={handleSettingsClick}
-          onSignOut={handleSignOut}
-          userName={user?.firstName ?? ''}
-          userEmail={user?.primaryEmailAddress?.emailAddress ?? ''}
-        />
-        <Sidebar />
-        <main className="p-4 md:ml-64 h-auto pt-20">
-          <Outlet />
-        </main>
-      </div>
-    </SidebarProvider>
+    <div className="antialiased bg-gray-50 dark:bg-gray-900">
+      <MainHeader
+        onProfileClick={handleProfileClick}
+        onSettingsClick={handleSettingsClick}
+        onSignOut={handleSignOut}
+        userName={user?.firstName ?? ''}
+        userEmail={user?.primaryEmailAddress?.emailAddress ?? ''}
+      />
+      <main className="p-4 h-auto pt-20 w-full">
+        <Outlet />
+      </main>
+    </div>
   );
 }
