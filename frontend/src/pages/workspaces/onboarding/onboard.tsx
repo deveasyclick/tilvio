@@ -47,7 +47,11 @@ export default function WorkspaceOnboarding() {
   // Load initial data from localStorage or empty
   const savedData =
     typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY);
-  const defaultValues = savedData ? JSON.parse(savedData) : {};
+  const parsedData = savedData ? JSON.parse(savedData) : {};
+  const defaultValues = {
+    ...parsedData,
+    logo: parsedData.logo || { file: null, previewUrl: '/placeholder.svg' },
+  };
 
   const methods = useForm<WorkspaceOnboardingData>({
     resolver: zodResolver(workspaceOnboardingSchema),

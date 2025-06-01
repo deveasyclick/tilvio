@@ -29,7 +29,7 @@ export const useLogoUpload = (
     if (!file) {
       setValue(
         'logo',
-        { file: null, previewUrl: '' },
+        { file: null, previewUrl: '/placeholder.svg' },
         { shouldValidate: true },
       );
       return;
@@ -55,7 +55,7 @@ export const useLogoUpload = (
       URL.revokeObjectURL(currentLogo.previewUrl);
     }
 
-    setValue('logo', { file: null, previewUrl: '' }, { shouldValidate: true });
+    setValue('logo', { file: null, previewUrl: '/placeholder.svg' }, { shouldValidate: true });
   };
 
   return {
