@@ -12,6 +12,14 @@ import {
 import StepIndicator from '../components/StepIndicator';
 
 const STORAGE_KEY = 'WorkspaceOnboardingFormData';
+const STEP_VALIDATION_FIELDS = [
+  // Step 0: Workspace Information
+  ['name', 'organizationName', 'organizationUrl', 'logo'],
+  // Step 1: Address Information
+  ['email', 'phone', 'state', 'city', 'address'],
+  // Step 2: Review - no validation needed
+  [],
+] as const;
 
 // Helper to determine step status
 const getStepStatus = (
@@ -27,7 +35,11 @@ export default function WorkspaceOnboarding() {
   const [step, setStep] = useState(0);
 
   const next = async () => {
-    setStep((s) => s + 1);
+    const fieldsToValidate = STEP_VALIDATION_FIELDS[step] || [];
+    const isValid = await methods.trigger(fieldsToValidate);
+    if (isValid) {
+      setStep((s) => s + 1);
+    }
   };
 
   const prev = () => setStep((s) => s - 1);
@@ -40,6 +52,7 @@ export default function WorkspaceOnboarding() {
   const methods = useForm<WorkspaceOnboardingData>({
     resolver: zodResolver(workspaceOnboardingSchema),
     defaultValues,
+    mode: 'onChange',
   });
 
   // Persist form data to localStorage on every change

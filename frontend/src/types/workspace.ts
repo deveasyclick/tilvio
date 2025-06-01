@@ -6,6 +6,7 @@ export type Workspace = {
   phone: string;
   state: string;
   city: string;
+  country: string;
   address: string;
   logo: string;
   onboardedAt: string;
