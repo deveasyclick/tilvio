@@ -44,15 +44,13 @@ func (r Role) Value() (driver.Value, error) {
 
 type Distributor struct {
 	gorm.Model
-	FirstName   string     `gorm:"not null;type:varchar(100);check:first_name <> ''" json:"firstName" validate:"required,max=100"`
-	LastName    string     `gorm:"not null;type:varchar(100);check:last_name <> ''" json:"lastName" validate:"required,max=100"`
-	Email       string     `gorm:"uniqueIndex;type:varchar(50);check:email <> ''" json:"email" validate:"required,max=50"`
-	Phone       string     `gorm:"not null;type:varchar(50);check:phone <> ''" json:"phone" validate:"required,max=50"`
-	State       string     `gorm:"not null;type:varchar(30);check:state <> ''" json:"state" validate:"required,max=30"`
-	City        string     `gorm:"not null;type:varchar(30);check:city <> ''" json:"city" validate:"required,max=30"`
-	Address     string     `gorm:"not null;type:varchar(100);check:address <> ''" json:"address" validate:"required,max=100"`
-	Role        string     `gorm:"not null;type:varchar(100);check:role IN ('admin', 'manager');default:'manager'" json:"role" validate:"required,max=100"`
-	WorkspaceID uint       `json:"workspaceId"`
-	Workspace   Workspace  `gorm:"foreignKey:WorkspaceID" json:"workspace"`
-	Customers   []Customer `gorm:"foreignKey:DistributorID" json:"customers"`
+	FirstName string      `gorm:"not null;type:varchar(100);check:first_name <> ''" json:"firstName" validate:"required,max=100"`
+	LastName  string      `gorm:"not null;type:varchar(100);check:last_name <> ''" json:"lastName" validate:"required,max=100"`
+	Email     string      `gorm:"uniqueIndex;type:varchar(50);check:email <> ''" json:"email" validate:"required,max=50"`
+	Phone     string      `gorm:"not null;type:varchar(50);check:phone <> ''" json:"phone" validate:"required,max=50"`
+	State     string      `gorm:"not null;type:varchar(30);check:state <> ''" json:"state" validate:"required,max=30"`
+	City      string      `gorm:"not null;type:varchar(30);check:city <> ''" json:"city" validate:"required,max=30"`
+	Address   string      `gorm:"not null;type:varchar(100);check:address <> ''" json:"address" validate:"required,max=100"`
+	Role      string      `gorm:"not null;type:varchar(100);check:role IN ('admin', 'manager');default:'manager'" json:"role" validate:"required,max=100"`
+	Workspace []Workspace `gorm:"many2many:distributor_workspaces;" json:"workspaces"`
 }
