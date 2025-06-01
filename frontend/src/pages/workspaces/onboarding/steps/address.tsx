@@ -1,5 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import Input from '../../../../components/Input/Input';
+import Select from '../../../../components/Select/Select';
+import { COUNTRIES } from '../../../../constants/countries';
 import type { WorkspaceOnboardingData } from '../../../../schemas/workspace';
 
 const WorkspaceAddressStep = () => {
@@ -76,6 +78,32 @@ const WorkspaceAddressStep = () => {
         {errors.address && (
           <p className="text-red-500 text-xs" role="alert" id="address-error">
             {errors.address?.message}
+          </p>
+        )}
+      </div>
+
+      {/* Country field */}
+      <div className="space-y-2">
+        <label className="block text-sm font-medium" htmlFor="country">
+          Country <span className="text-red-500">*</span>
+        </label>
+        <Select
+          id="country"
+          className={`text-input px-2 ${errors.country ? 'border-red-500' : ''}`}
+          aria-required="true"
+          aria-invalid={!!errors.country}
+          aria-describedby={errors.country ? 'country-error' : undefined}
+          {...register('country')}>
+          <option value="">Select your country</option>
+          {COUNTRIES.map((country) => (
+            <option key={country.value} value={country.value}>
+              {country.label}
+            </option>
+          ))}
+        </Select>
+        {errors.country && (
+          <p className="text-red-500 text-xs" role="alert" id="country-error">
+            {errors.country?.message}
           </p>
         )}
       </div>
