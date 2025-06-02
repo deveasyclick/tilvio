@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { Outlet } from 'react-router';
-import Sidebar from '../components/Sidebar/Sidebar';
-import { SidebarProvider } from '../contexts/sidebar';
+import Sidebar from './components/sidebar/Sidebar';
+import { SidebarProvider } from '../../contexts/sidebar';
 import { useUser } from '@clerk/clerk-react';
-import DashboardHeader from '../components/Headers/main/Main';
+import DashboardHeader from './components/header';
 
 /**
  * Dashboard Layout Component

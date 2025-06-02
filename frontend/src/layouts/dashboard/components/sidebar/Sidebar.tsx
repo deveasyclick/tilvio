@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import SidebarSearch from './SidebarSearch';
 import SidebarNavigation from './SidebarNavigation';
-import { useSidebarClickOutside } from '../../hooks/useSidebarClickOutside';
-import { useIsMobile } from '../../hooks/useMediaQuery';
-import { useEscapeKey } from '../../hooks/useKeyPress';
-import { useFocusEffect } from '../../hooks/useFocusEffect';
-import { useSidebar } from '../../contexts/sidebar/context';
+import { useSidebarClickOutside } from '../../../../hooks/useSidebarClickOutside';
+import { useIsMobile } from '../../../../hooks/useMediaQuery';
+import { useEscapeKey } from '../../../../hooks/useKeyPress';
+import { useFocusEffect } from '../../../../hooks/useFocusEffect';
+import { useSidebar } from '../../../../contexts/sidebar/context';
 
 export default function Sidebar() {
   const { isSidebarOpen, closeSidebar } = useSidebar();

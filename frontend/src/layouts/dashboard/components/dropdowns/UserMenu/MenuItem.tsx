@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import IconWrapper from '../../../../IconWrapper/IconWrapper';
 import type { MenuItemData } from './userMenuData';
+import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
 
 /**
  * Props for the MenuItem component

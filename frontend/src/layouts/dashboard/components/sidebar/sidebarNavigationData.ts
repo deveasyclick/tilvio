@@ -1,4 +1,4 @@
-import { IconNames } from '../../types';
+import { IconNames } from '../../../../types';
 
 /**
  * Type definition for sidebar navigation items

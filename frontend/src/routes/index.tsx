@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
-import DashboardLayout from '../layouts/DashboardLayout';
+import DashboardLayout from '../layouts/dashboard';
 import DashboardHome from '../pages/dashboard/Home';
 import Members from '../pages/members';
 import Loans from '../pages/loans';

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router';
-import IconWrapper from '../../IconWrapper/IconWrapper';
+import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
 import type { SidebarNavItemData } from '../sidebarNavigationData';
 
 /**
