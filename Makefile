@@ -23,6 +23,7 @@ help:
 	@echo "  make build-frontend       - Build frontend"
 	@echo "  make build-backend        - Build backend"
 	@echo "  make clean                - Clean build artifacts"
+	@echo "  make lint-frontend        - Lint frontend code"
 
 # Installation targets
 .PHONY: install
@@ -75,3 +76,14 @@ clean:
 	rm -rf $(FRONTEND_DIR)/dist
 	@# Add backend clean commands when implemented
 	@# Example: rm -rf bin/
+
+.PHONY: lint-frontend
+lint-frontend:
+	@echo "Linting frontend..."
+	@cd ${FRONTEND_DIR} && npm run lint
+
+
+.PHONY: lint-backend
+lint-backend:
+	@echo "Lint backend..."
+	@cd backend && go fmt ./... && go vet ./...
