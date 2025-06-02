@@ -15,6 +15,7 @@ const SearchForm = memo(() => (
       placeholder="Search"
       type="text"
       id="topbar-search"
+      inputClassName="text-input"
     />
   </form>
 ));
