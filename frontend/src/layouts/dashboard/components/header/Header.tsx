@@ -1,21 +1,35 @@
 import { useCallback, useState } from 'react';
-import AppsDropdown from './dropdowns/Apps/AppsDropdown';
-import NotificationsDropdown from './dropdowns/Notifications/NotificationsDropdown';
-import UserMenuDropdown from './dropdowns/UserMenu/UserMenuDropdown';
-import IconWrapper from '../../IconWrapper/IconWrapper';
-import Image from '../../Image';
-import { DEFAULT_IMAGES } from '../../../constants/images';
-import { MainHeaderProps } from './types';
-import Logo from './Logo';
-import SearchForm from './SearchForm';
+import AppsDropdown from '../dropdowns/Apps/AppsDropdown';
+import NotificationsDropdown from '../dropdowns/Notifications/NotificationsDropdown';
+import UserMenuDropdown from '../dropdowns/UserMenu/UserMenuDropdown';
+import { DEFAULT_IMAGES } from '../../../../constants/images';
 import HeaderButton from './HeaderButton';
-import ThemeToggle from '../../ThemeToggle';
-import { useSidebar } from '../../../contexts/sidebar/context';
+import { useSidebar } from '../../../../contexts/sidebar/context';
+import IconWrapper from '../../../../components/IconWrapper/IconWrapper';
+import ThemeToggle from '../../../../components/ThemeToggle';
+import Image from '../../../../components/Image';
+import SearchForm from '../../../components/SearchForm';
+import Logo from '../../../components/Logo';
 
+export type DashboardHeaderProps = {
+  logoSrc?: string;
+  logoAlt?: string;
+  logoText?: string;
+  userPhotoSrc?: string;
+  userPhotoAlt?: string;
+  userName?: string;
+  userEmail?: string;
+  onProfileClick?: () => void;
+  onSettingsClick?: () => void;
+  onLikesClick?: () => void;
+  onCollectionsClick?: () => void;
+  onProVersionClick?: () => void;
+  onSignOut?: () => void;
+};
 /**
- * Main header component for the application
+ * Dashboard header component for the application
  */
-const MainHeader = ({
+const DashboardHeader = ({
   logoSrc,
   logoAlt,
   logoText,
@@ -29,7 +43,7 @@ const MainHeader = ({
   onCollectionsClick,
   onProVersionClick,
   onSignOut,
-}: MainHeaderProps = {}) => {
+}: DashboardHeaderProps = {}) => {
   // Get sidebar context
   const { toggleSidebar, isSidebarOpen } = useSidebar();
 
@@ -152,4 +166,4 @@ const MainHeader = ({
   );
 };
 
-export default MainHeader;
+export default DashboardHeader;

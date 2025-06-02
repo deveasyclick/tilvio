@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { DropdownHeader } from '../../../../Dropdown';
-import HeaderDropdown from '../../HeaderDropdown';
-import Image from '../../../../Image';
+import HeaderDropdown from '../../header/HeaderDropdown';
 import { DEFAULT_IMAGES } from '../../../../../constants/images';
-import { DropdownProps } from '../../types';
 import { MenuItem, getDefaultMenuItems, UserMenuCallbacks } from './index';
 import { SignOutButton } from '@clerk/react-router';
-import IconWrapper from '../../../../IconWrapper/IconWrapper';
+import type { DropdownProps } from '../../../types';
+import { DropdownHeader } from '../../../../../components/Dropdown';
+import Image from '../../../../../components/Image';
+import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
 
 /**
  * Props for user menu dropdown component

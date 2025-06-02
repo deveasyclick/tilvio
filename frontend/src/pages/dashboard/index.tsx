@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import MainHeader from '../../components/Headers/main/Main';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import Sidebar from '../../layouts/dashboard/components/sidebar/Sidebar';
 import MainContent from '../../components/MainContent/MainContent';
 import { SidebarProvider } from '../../contexts/sidebar';
+import DashboardHeader from '../../layouts/dashboard/components/header';
 
 export default function Dashboard() {
   // Example callback handlers for user menu actions
@@ -24,7 +24,7 @@ export default function Dashboard() {
   return (
     <SidebarProvider>
       <div className="antialiased bg-gray-50 dark:bg-gray-900">
-        <MainHeader
+        <DashboardHeader
           onProfileClick={handleProfileClick}
           onSettingsClick={handleSettingsClick}
           onSignOut={handleSignOut}

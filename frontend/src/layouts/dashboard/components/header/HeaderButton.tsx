@@ -1,6 +1,17 @@
 import { memo } from 'react';
-import Button from '../../Button/Button';
-import { HeaderButtonProps } from './types';
+import Button from '../../../../components/Button/Button';
+
+/**
+ * Props for header button component
+ */
+export type HeaderButtonProps = {
+  ariaControls: string;
+  ariaExpanded?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+  className?: string;
+  id?: string;
+};
 
 /**
  * Header button component with icon

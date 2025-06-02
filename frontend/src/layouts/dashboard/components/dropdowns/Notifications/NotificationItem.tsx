@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import IconWrapper from '../../../../IconWrapper/IconWrapper';
-import Image from '../../../../Image';
 import { DEFAULT_IMAGES } from '../../../../../constants/images';
 import type { IconNames } from '../../../../../types';
+import Image from '../../../../../components/Image';
+import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
 
 /**
  * Type definition for notification badge colors

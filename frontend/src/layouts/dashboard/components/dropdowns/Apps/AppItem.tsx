@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import IconWrapper from '../../../../IconWrapper/IconWrapper';
 import type { IconNames } from '../../../../../types';
+import IconWrapper from '../../../../../components/IconWrapper/IconWrapper';
 
 /**
  * Props for app item component

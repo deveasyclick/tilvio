@@ -1,9 +1,9 @@
 import { memo } from 'react';
-import { DropdownHeader } from '../../../../Dropdown';
-import HeaderDropdown from '../../HeaderDropdown';
-import { DropdownProps } from '../../types';
+import HeaderDropdown from '../../header/HeaderDropdown';
 import AppItem from './AppItem';
 import { appItems } from './appData';
+import type { DropdownProps } from '../../../types';
+import { DropdownHeader } from '../../../../../components/Dropdown';
 
 /**
  * Apps dropdown component

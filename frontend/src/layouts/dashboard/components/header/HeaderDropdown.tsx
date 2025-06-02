@@ -1,7 +1,7 @@
 import { memo, useRef } from 'react';
-import { DropdownWrapper } from '../../Dropdown';
-import type { DropdownProps } from './types';
-import useClickOutside from '../../../hooks/useClickOutside';
+import useClickOutside from '../../../../hooks/useClickOutside';
+import { DropdownWrapper } from '../../../../components/Dropdown';
+import type { DropdownProps } from '../../types';
 
 type HeaderDropdownProps = DropdownProps & {
   id: string;
