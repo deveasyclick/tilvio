@@ -18,11 +18,15 @@ func Register(db db.Service) *chi.Mux {
 	// Enable rate limiter of 100 requests per minute per IP
 	r.Use(httprate.LimitByIP(100, 1*time.Minute))
 
+	// Health check endpoint outside of API versioning
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("alive"))
 	})
 
-	registerURLRoutes(r, db.DB)
+	r.Route("/api", func(r chi.Router) {
+		registerURLRoutes(r, db.DB)
+		registerWebhookRoutes(r, db.DB)
+	})
 
 	return r
 }
