@@ -13,7 +13,7 @@ const (
 
 type DistributorRepository interface {
 	Create(distributor *models.Distributor) error
-	Update(distributor *models.Distributor) error
+	Update(ID uint, distributor *models.Distributor) error
 	DeleteByID(clerkID string) error
 	FindByID(ID string) (*models.Distributor, error)
 	FindByEmail(email string) (*models.Distributor, error)
@@ -28,8 +28,8 @@ func (r *distributorRepository) Create(distributor *models.Distributor) error {
 	return r.db.Create(distributor).Error
 }
 
-func (r *distributorRepository) Update(distributor *models.Distributor) error {
-	return r.db.Where(whereID, distributor.ID).Updates(distributor).Error
+func (r *distributorRepository) Update(ID uint, distributor *models.Distributor) error {
+	return r.db.Where(whereID, ID).Updates(distributor).Error
 }
 
 func (r *distributorRepository) DeleteByID(ID string) error {
