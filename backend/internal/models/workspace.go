@@ -14,8 +14,9 @@ type Workspace struct {
 	Phone            string        `gorm:"not null;type:varchar(50);check:phone <> ''" json:"phone" validate:"required,max=50"`
 	State            string        `gorm:"not null;type:varchar(30);check:state <> ''" json:"state" validate:"required,max=30"`
 	City             string        `gorm:"not null;type:varchar(30);check:city <> ''" json:"city" validate:"required,max=30"`
+	Country          string        `gorm:"not null;type:varchar(30);check:country <> ''" json:"country" validate:"required,max=30"`
 	Address          string        `gorm:"not null;type:varchar(100);check:address <> ''" json:"address" validate:"required,max=100"`
 	OnboardedAt      bool          `gorm:"type:boolean;default:false" json:"onboardedAt"`
 	Customers        []Customer    `gorm:"many2many:customer_workspaces;" json:"customers"`
-	Distributors     []Distributor `gorm:"many2many:distributor_workspaces;" json:"distributors"`
+	Distributors     []Distributor `gorm:"foreignKey:WorkspaceID" json:"distributors"`
 }
