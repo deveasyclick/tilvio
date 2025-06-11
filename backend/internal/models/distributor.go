@@ -44,14 +44,15 @@ func (r Role) Value() (driver.Value, error) {
 
 type Distributor struct {
 	gorm.Model
-	ClerkID   string      `gorm:"uniqueIndex;type:varchar(50)" json:"clerkId"`
-	FirstName string      `gorm:"not null;type:varchar(100);check:first_name <> ''" json:"firstName" validate:"required,max=100"`
-	LastName  string      `gorm:"not null;type:varchar(100);check:last_name <> ''" json:"lastName" validate:"required,max=100"`
-	Email     string      `gorm:"uniqueIndex;type:varchar(50);check:email <> ''" json:"email" validate:"required,max=50"`
-	Phone     *string     `gorm:"type:varchar(50)" json:"phone" validate:"omitempty,max=50"`
-	State     *string     `gorm:"type:varchar(30)" json:"state" validate:"omitempty,max=30"`
-	City      *string     `gorm:"type:varchar(30)" json:"city" validate:"omitempty,max=30"`
-	Address   *string     `gorm:"type:varchar(100)" json:"address" validate:"omitempty,max=100"`
-	Role      Role        `gorm:"type:varchar(20);check:role IN ('distributor', 'manager');default:'distributor'" json:"role" validate:"required"`
-	Workspace []Workspace `gorm:"many2many:distributor_workspaces;" json:"workspaces"`
+	ClerkID     string    `gorm:"uniqueIndex;type:varchar(50)" json:"clerkId"`
+	FirstName   string    `gorm:"not null;type:varchar(100);check:first_name <> ''" json:"firstName" validate:"required,max=100"`
+	LastName    string    `gorm:"not null;type:varchar(100);check:last_name <> ''" json:"lastName" validate:"required,max=100"`
+	Email       string    `gorm:"uniqueIndex;type:varchar(50);check:email <> ''" json:"email" validate:"required,max=50"`
+	Phone       *string   `gorm:"type:varchar(50)" json:"phone" validate:"omitempty,max=50"`
+	State       *string   `gorm:"type:varchar(30)" json:"state" validate:"omitempty,max=30"`
+	City        *string   `gorm:"type:varchar(30)" json:"city" validate:"omitempty,max=30"`
+	Address     *string   `gorm:"type:varchar(100)" json:"address" validate:"omitempty,max=100"`
+	Role        Role      `gorm:"type:varchar(20);check:role IN ('distributor', 'manager');default:'distributor'" json:"role" validate:"required"`
+	WorkspaceID *uint     `json:"workspaceId,omitempty"`
+	Workspace   Workspace `gorm:"foreignKey:WorkspaceID" json:"workspace,omitempty"`
 }
