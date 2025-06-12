@@ -16,6 +16,6 @@ func registerWebhookRoutes(r chi.Router, db *gorm.DB) {
 
 	// Public routes (no auth required, but webhook signature is verified)
 	r.Route("/webhooks", func(r chi.Router) {
-		r.Post("/", middleware.VerifyClerkWebhook(webhookHandler.HandleWebhook))
+		r.With(middleware.VerifyClerkWebhook).Post("/handleUserCreated", webhookHandler.HandleWebhook)
 	})
 }
