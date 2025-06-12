@@ -40,7 +40,7 @@ type Distributor struct {
 	City      string
 	Address   string
 	Role      string
-	Workspace []Workspace
+	Workspace Workspace
 }
 
 type Customer struct {
@@ -183,5 +183,61 @@ order_total_weight = sum of all order_items total_weight
 ## Dynamic Pricing support
 There will be a default pricelists for all the retailers but Retailers can also add different pricelists and apply this pricelists based on the customer. This is done by fetching this pricelists and apply them at the point of creating orders and order items.
 
+
+### Project Structure
+tilvio/
+├── backend/
+│   ├── cmd/
+│   │   └── api/
+│   │       └── main.go
+│   └── internal/
+│       ├── auth/
+│       │   └── middleware.go
+│       ├── config/
+│       │   └── config.go
+│       ├── handlers/
+│       │   ├── customer.go
+│       │   ├── distributor.go
+│       │   ├── order.go
+│       │   ├── pricelist.go
+│       │   └── product.go
+│       ├── models/
+│       │   ├── customer.go
+│       │   ├── distributor.go
+│       │   ├── manufacturer.go
+│       │   ├── order.go
+│       │   ├── pricelist.go
+│       │   ├── product.go
+│       │   └── workspace.go
+│       └── repository/
+│           └── postgres/
+│               └── db.go
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── customers/
+│   │   │   ├── layout/
+│   │   │   ├── orders/
+│   │   │   ├── pricelists/
+│   │   │   └── products/
+│   │   ├── context/
+│   │   │   └── WorkspaceContext.tsx
+│   │   ├── pages/
+│   │   │   ├── customers/
+│   │   │   ├── orders/
+│   │   │   ├── pricelists/
+│   │   │   └── products/
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── package.json
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   └── vite.config.ts
+└── .github/
+    └── workflows/
+        ├── backend-pr-check.yml
+        └── frontend-pr-check.yml
 
 ```
