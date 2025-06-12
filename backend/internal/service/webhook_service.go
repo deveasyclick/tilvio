@@ -1,9 +1,13 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
+	"strconv"
 
+	"github.com/clerk/clerk-sdk-go/v2/user"
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/pkg/types"
 )
@@ -36,8 +40,22 @@ func (s *webhookService) HandleDistributorCreated(data map[string]interface{}) e
 	}
 
 	err = s.distributorService.Create(distributor)
+
 	if err != nil {
 		return fmt.Errorf("error creating distributor: %w", err)
+	}
+
+	insertedDistributor, err := s.distributorService.GetDistributorByEmail(distributor.Email)
+	if err != nil {
+		slog.Error("error fetching distributor", "error", err)
+	}
+	externalID := strconv.FormatUint(uint64(insertedDistributor.ID), 10)
+	_, err = user.Update(context.Background(), insertedDistributor.ClerkID, &user.UpdateParams{ExternalID: &externalID})
+
+	if err != nil {
+		slog.Error("error updating clerk user", "error", err)
+	} else {
+		slog.Info("Updated clerk user externalId", "externalId", externalID)
 	}
 
 	return nil
