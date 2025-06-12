@@ -26,6 +26,7 @@ func Register(db db.Service) *chi.Mux {
 	r.Route("/api", func(r chi.Router) {
 		registerURLRoutes(r, db.DB)
 		registerWebhookRoutes(r, db.DB)
+		registerWorkspaceRoutes(r, db.DB)
 	})
 
 	return r
