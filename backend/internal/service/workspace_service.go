@@ -21,7 +21,6 @@ type WorkspaceService interface {
 	Update(workspace *models.Workspace) error
 	Delete(ID uint) error
 	GetWorkspace(ID uint) (*models.Workspace, error)
-	GetWorkspacesByDistributor(distributorID uint) ([]models.Workspace, error)
 }
 
 type workspaceService struct {
@@ -72,14 +71,6 @@ func (s *workspaceService) GetWorkspace(ID uint) (*models.Workspace, error) {
 		return nil, fmt.Errorf(errFormat, errFindWorkspace, err)
 	}
 	return workspace, nil
-}
-
-func (s *workspaceService) GetWorkspacesByDistributor(distributorID uint) ([]models.Workspace, error) {
-	workspaces, err := s.repo.FindByDistributorID(distributorID)
-	if err != nil {
-		return nil, fmt.Errorf(errFormat, errFindWorkspace, err)
-	}
-	return workspaces, nil
 }
 
 func NewWorkspaceService(repo repository.WorkspaceRepository, distributorService DistributorService) WorkspaceService {

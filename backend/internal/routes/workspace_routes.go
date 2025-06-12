@@ -28,6 +28,5 @@ func registerWorkspaceRoutes(router chi.Router, db *gorm.DB) {
 		// Delete workspace by ID
 		r.Delete("/{id}", workspaceHandler.Delete)
 
-		r.Get("/", workspaceHandler.List)
 	})
 }

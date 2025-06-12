@@ -24,7 +24,6 @@ type WorkspaceHandler interface {
 	Update(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
 	Get(w http.ResponseWriter, r *http.Request)
-	List(w http.ResponseWriter, r *http.Request)
 }
 
 type workspaceHandler struct {
@@ -161,24 +160,6 @@ func (h *workspaceHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(workspace)
-}
-
-func (h *workspaceHandler) List(w http.ResponseWriter, r *http.Request) {
-	distributorID, err := strconv.ParseUint(r.URL.Query().Get("distributor_id"), 10, 64)
-	if err != nil {
-		slog.Error("invalid distributor ID in list", "error", err)
-		http.Error(w, errInvalidDistributorID, http.StatusBadRequest)
-		return
-	}
-
-	workspaces, err := h.service.GetWorkspacesByDistributor(uint(distributorID))
-	if err != nil {
-		slog.Error("failed to list workspaces", "error", err, "distributorID", distributorID)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	json.NewEncoder(w).Encode(workspaces)
 }
 
 func NewWorkspaceHandler(service service.WorkspaceService) WorkspaceHandler {

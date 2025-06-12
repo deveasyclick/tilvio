@@ -10,7 +10,6 @@ type WorkspaceRepository interface {
 	Update(workspace *models.Workspace) error
 	Delete(ID uint) error
 	FindByID(ID uint) (*models.Workspace, error)
-	FindByDistributorID(distributorID uint) ([]models.Workspace, error)
 }
 
 type workspaceRepository struct {
@@ -36,16 +35,6 @@ func (r *workspaceRepository) FindByID(ID uint) (*models.Workspace, error) {
 		return nil, err
 	}
 	return &workspace, nil
-}
-
-func (r *workspaceRepository) FindByDistributorID(distributorID uint) ([]models.Workspace, error) {
-	var workspaces []models.Workspace
-	err := r.db.Where("id IN (SELECT workspace_id FROM distributors WHERE id = ?)", distributorID).
-		Find(&workspaces).Error
-	if err != nil {
-		return nil, err
-	}
-	return workspaces, nil
 }
 
 func NewWorkspaceRepository(db *gorm.DB) WorkspaceRepository {
