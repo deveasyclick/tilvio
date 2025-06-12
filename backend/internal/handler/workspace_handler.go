@@ -114,9 +114,6 @@ func (h *workspaceHandler) Update(w http.ResponseWriter, r *http.Request) {
 	if req.Address != "" {
 		existingWorkspace.Address = req.Address
 	}
-	if req.OnboardedAt != nil {
-		existingWorkspace.OnboardedAt = *req.OnboardedAt
-	}
 
 	if err := h.service.Update(existingWorkspace); err != nil {
 		slog.Error("failed to update workspace", "error", err, "id", id)

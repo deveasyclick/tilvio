@@ -23,5 +23,4 @@ type UpdateWorkspaceRequest struct {
 	State            string `json:"state" validate:"omitempty,min=2,max=30"`
 	City             string `json:"city" validate:"omitempty,min=2,max=30"`
 	Address          string `json:"address" validate:"omitempty,min=5,max=100"`
-	OnboardedAt      *bool  `json:"onboardedAt" validate:"omitempty"`
 }
