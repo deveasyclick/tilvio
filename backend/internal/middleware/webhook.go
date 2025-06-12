@@ -13,8 +13,8 @@ import (
 )
 
 // VerifyClerkWebhook is a middleware that verifies Clerk webhook signatures
-func VerifyClerkWebhook(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func VerifyClerkWebhook(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify webhook signature
 		wh, err := svix.GetWebhookVerifier()
 		if err != nil {
@@ -43,7 +43,7 @@ func VerifyClerkWebhook(next http.HandlerFunc) http.HandlerFunc {
 		// Verify the webhook
 		err = wh.Verify(body, headers)
 		if err != nil {
-			slog.Error("Invalid webhook signature", "err", err)
+			slog.Error("Invalid webhook signature", "err", err, "headers", headers)
 			http.Error(w, "Invalid webhook signature", http.StatusUnauthorized)
 			return
 		}
@@ -61,6 +61,6 @@ func VerifyClerkWebhook(next http.HandlerFunc) http.HandlerFunc {
 		r = r.WithContext(ctx)
 
 		// Call the next handler
-		next(w, r)
-	}
+		next.ServeHTTP(w, r)
+	})
 }
