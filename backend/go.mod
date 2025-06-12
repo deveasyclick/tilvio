@@ -5,6 +5,7 @@ go 1.23.4
 require (
 	github.com/clerk/clerk-sdk-go/v2 v2.3.1
 	github.com/go-chi/chi v1.5.5
+	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/httprate v0.15.0
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/jackc/pgx/v5 v5.7.4
