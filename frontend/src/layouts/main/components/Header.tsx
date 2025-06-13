@@ -1,20 +1,17 @@
 import Logo from '../../components/Logo';
 import ThemeToggle from '../../../components/ThemeToggle';
+import { SignOutButton } from '@clerk/clerk-react';
+import Button from '../../../components/Button/Button';
 
 export type MainHeaderProps = {
   logoSrc?: string;
   logoAlt?: string;
   logoText?: string;
-  userPhotoSrc?: string;
-  userPhotoAlt?: string;
   userName?: string;
   userEmail?: string;
-  onProfileClick?: () => void;
-  onSettingsClick?: () => void;
   onLikesClick?: () => void;
   onCollectionsClick?: () => void;
   onProVersionClick?: () => void;
-  onSignOut?: () => void;
 };
 /**
  * Main header component for the application
@@ -28,6 +25,11 @@ const MainHeader = ({ logoSrc, logoAlt, logoText }: MainHeaderProps = {}) => {
         </section>
         <section className="flex items-center lg:order-2">
           <ThemeToggle className="mr-2" />
+          <SignOutButton>
+            <Button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 dark:hover:bg-primary-600 cursor-pointer">
+              Sign Out
+            </Button>
+          </SignOutButton>
         </section>
       </div>
     </nav>
