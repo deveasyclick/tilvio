@@ -12,6 +12,7 @@ import { PRIMARY_COLOR } from '../constants/colors';
 import WorkspaceOnboarding from '../pages/workspaces/onboarding/onboard';
 import MainLayout from '../layouts/main';
 import ProtectRoutes from './ProtectRoute';
+import QueryProvider from '../providers/QueryProvider';
 
 const AppRoutes = () => {
   return (
@@ -21,22 +22,24 @@ const AppRoutes = () => {
         appearance={{
           signIn: { variables: { colorPrimary: PRIMARY_COLOR } },
         }}>
-        <Routes>
-          <Route path="/signin" element={<Auth />} />
+        <QueryProvider>
+          <Routes>
+            <Route path="/signin" element={<Auth />} />
 
-          <Route element={<ProtectRoutes />}>
-            <Route path="/workspaces/onboarding" element={<MainLayout />}>
-              <Route index element={<WorkspaceOnboarding />} />
-            </Route>
+            <Route element={<ProtectRoutes />}>
+              <Route path="/workspaces/onboarding" element={<MainLayout />}>
+                <Route index element={<WorkspaceOnboarding />} />
+              </Route>
 
-            <Route path="/" element={<DashboardLayout />}>
-              <Route index element={<DashboardHome />} />
-              <Route path="members" element={<Members />} />
-              <Route path="loans" element={<Loans />} />
-              <Route path="products" element={<Products />} />
+              <Route path="/" element={<DashboardLayout />}>
+                <Route index element={<DashboardHome />} />
+                <Route path="members" element={<Members />} />
+                <Route path="loans" element={<Loans />} />
+                <Route path="products" element={<Products />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </QueryProvider>
       </ClerkProvider>
     </BrowserRouter>
   );
