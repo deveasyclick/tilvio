@@ -87,3 +87,8 @@ lint-frontend:
 lint-backend:
 	@echo "Lint backend..."
 	@cd backend && go fmt ./... && go vet ./...
+
+.PHONY: format-frontend
+format-frontend:
+	@echo "Formatting frontend..."
+	@cd ${FRONTEND_DIR} && npm run format
