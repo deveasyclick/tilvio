@@ -33,4 +33,9 @@ Object.values(configs).forEach((envObj) => {
   }
 });
 
+export function getConfig(key: keyof ENV_VARS): string {
+  return configs[key].value;
+}
+
+// TODO: Remove and use getConfig to prevent issue while accessing configs using the configs object
 export default configs;
