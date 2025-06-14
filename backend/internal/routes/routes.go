@@ -42,6 +42,7 @@ func Register(db db.Service) *chi.Mux {
 			r.Use(middleware.AuthRequiredMiddleware())
 			registerURLRoutes(r, db.DB)
 			registerWorkspaceRoutes(r, db.DB)
+			registerDistributorRoutes(r, db.DB)
 		})
 
 	})
