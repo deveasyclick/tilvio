@@ -22,7 +22,7 @@ type DistributorService interface {
 	UpdateDistributor(ID uint, distributor *models.Distributor) error
 	DeleteDistributor(id string) error
 	GetDistributorByEmail(email string) (*models.Distributor, error)
-	GetDistributorByClerkID(clerkID string) (*models.Distributor, error)
+	GetDistributorByClerkID(clerkID string, preloads ...string) (*models.Distributor, error)
 }
 
 type distributorService struct {
@@ -72,8 +72,8 @@ func (s *distributorService) GetDistributorByEmail(email string) (*models.Distri
 	return distributor, nil
 }
 
-func (s *distributorService) GetDistributorByClerkID(clerkID string) (*models.Distributor, error) {
-	distributor, err := s.repo.FindByClerkID(clerkID)
+func (s *distributorService) GetDistributorByClerkID(clerkID string, preloads ...string) (*models.Distributor, error) {
+	distributor, err := s.repo.FindByClerkID(clerkID, preloads...)
 	if err != nil {
 		return nil, fmt.Errorf(errFormat, errFindDistributor, err)
 	}
