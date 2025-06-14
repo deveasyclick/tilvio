@@ -12,6 +12,7 @@ import {
 } from '../../../schemas/workspace';
 import { useCreateWorkspace } from '../../../api/workspace';
 import StepIndicator from '../components/StepIndicator';
+import { useFetchAuthenticatedDistributor } from '../../../api/distributor';
 
 const STORAGE_KEY = 'WorkspaceOnboardingFormData';
 const STEP_VALIDATION_FIELDS = [
@@ -36,7 +37,7 @@ const getStepStatus = (
 export default function WorkspaceOnboarding() {
   const [step, setStep] = useState(0);
   const navigate = useNavigate();
-
+  const { refetch } = useFetchAuthenticatedDistributor();
   const next = async () => {
     const fieldsToValidate = STEP_VALIDATION_FIELDS[step] || [];
     const isValid = await methods.trigger(fieldsToValidate);
@@ -85,6 +86,8 @@ export default function WorkspaceOnboarding() {
         onSuccess: async () => {
           // Clear saved data
           localStorage.removeItem(STORAGE_KEY);
+          // Refetch distributor to preload workspace
+          await refetch();
           // Redirect to dashboard
           navigate('/');
         },
