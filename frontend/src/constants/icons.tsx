@@ -37,7 +37,12 @@ import {
   SortDownIcon,
   ChartBarIcon,
 } from '../components/Icons';
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  Loader2,
+} from 'lucide-react';
 
 export const Icons = {
   search: SearchIcon,
@@ -80,4 +85,5 @@ export const Icons = {
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
   checkMarkCircle: CheckIcon,
+  loader: Loader2,
 };

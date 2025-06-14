@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import MultiStepForm from '../../../components/Forms/MultiStep/MultiStepForm';
 import OnboardDistributor from './steps/address';
 import OnboardWorkspace from './steps/information';
@@ -9,7 +10,9 @@ import {
   workspaceOnboardingSchema,
   type WorkspaceOnboardingData,
 } from '../../../schemas/workspace';
+import { useCreateWorkspace } from '../../../api/workspace';
 import StepIndicator from '../components/StepIndicator';
+import { useFetchAuthenticatedDistributor } from '../../../api/distributor';
 
 const STORAGE_KEY = 'WorkspaceOnboardingFormData';
 const STEP_VALIDATION_FIELDS = [
@@ -33,7 +36,8 @@ const getStepStatus = (
 
 export default function WorkspaceOnboarding() {
   const [step, setStep] = useState(0);
-
+  const navigate = useNavigate();
+  const { refetch } = useFetchAuthenticatedDistributor();
   const next = async () => {
     const fieldsToValidate = STEP_VALIDATION_FIELDS[step] || [];
     const isValid = await methods.trigger(fieldsToValidate);
@@ -67,12 +71,40 @@ export default function WorkspaceOnboarding() {
     return () => subscription.unsubscribe();
   }, [methods]);
 
-  const handleSubmit = (data: WorkspaceOnboardingData) => {
-    // Final submit: call your API here
-    console.log('Submitting onboarding data:', data);
+  const { mutate: createWorkspace, isPending } = useCreateWorkspace();
+  const [error, setError] = useState<string | undefined>();
 
-    // Clear saved data on successful submit
-    localStorage.removeItem(STORAGE_KEY);
+  const handleSubmit = async (data: WorkspaceOnboardingData) => {
+    setError(undefined);
+    try {
+      const formData = {
+        ...data,
+        logo: '',
+      };
+
+      createWorkspace(formData, {
+        onSuccess: async () => {
+          // Clear saved data
+          localStorage.removeItem(STORAGE_KEY);
+          // Refetch distributor to preload workspace
+          await refetch();
+          // Redirect to dashboard
+          navigate('/');
+        },
+        onError: (err) => {
+          console.error('Failed to create workspace:');
+          console.log(err);
+          setError(
+            err instanceof Error
+              ? err.message
+              : 'Failed to create workspace. Please try again.',
+          );
+        },
+      });
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError('An unexpected error occurred. Please try again.');
+    }
   };
 
   const steps = [
@@ -112,6 +144,8 @@ export default function WorkspaceOnboarding() {
             prev={prev}
             currentStep={step}
             onSubmit={methods.handleSubmit(handleSubmit)}
+            isSubmitting={isPending}
+            error={error}
           />
         </FormProvider>
       </section>
