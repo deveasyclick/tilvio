@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/deveasyclick/tilvio/internal/models"
 	"gorm.io/gorm"
 )
@@ -17,7 +19,7 @@ type DistributorRepository interface {
 	DeleteByID(clerkID string) error
 	FindByID(ID string) (*models.Distributor, error)
 	FindByEmail(email string) (*models.Distributor, error)
-	FindByClerkID(clerkID string) (*models.Distributor, error)
+	FindByClerkID(clerkID string, preloads ...string) (*models.Distributor, error)
 }
 
 type distributorRepository struct {
@@ -54,15 +56,26 @@ func (r *distributorRepository) FindByEmail(email string) (*models.Distributor, 
 	return &distributor, nil
 }
 
-func (r *distributorRepository) FindByClerkID(clerkID string) (*models.Distributor, error) {
+func (r *distributorRepository) FindByClerkID(clerkID string, preloads ...string) (*models.Distributor, error) {
 	var distributor models.Distributor
-	err := r.db.Where(whereClerkID, clerkID).First(&distributor).Error
+
+	// Start building the query
+	query := r.db.Model(&models.Distributor{})
+
+	// Conditionally preload relations
+	for _, relation := range preloads {
+		query = query.Preload(relation)
+	}
+
+	// Execute the query
+	err := query.Where(whereClerkID, clerkID).First(&distributor).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, err
 	}
+
 	return &distributor, nil
 }
 
