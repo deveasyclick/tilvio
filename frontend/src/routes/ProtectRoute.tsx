@@ -43,6 +43,7 @@ const ProtectRoutes = () => {
   const onboardingPath = '/workspaces/onboarding';
   const isOnOnboardingPage = location.pathname.startsWith(onboardingPath);
 
+  // Distributor is onboarded if they have a workspace
   const onboarded = !!distributor?.workspace?.name;
 
   // 👇 Don't redirect if we're already on the onboarding page
