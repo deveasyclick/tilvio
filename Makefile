@@ -92,3 +92,8 @@ lint-backend:
 format-frontend:
 	@echo "Formatting frontend..."
 	@cd ${FRONTEND_DIR} && npm run format
+
+.PHONY: tiles-upload
+tiles-upload:
+	@echo "Uploading tiles..."
+	@cd ${BACKEND_DIR} && go run cmd/scripts/tilesupload/main.go cmd/scripts/tilesupload/db.go $(manufacturer)

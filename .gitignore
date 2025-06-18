@@ -30,3 +30,9 @@ tmp/
 
 # backend executable file
 backend/main
+
+backend/assets/
+*.pdf
+
+venv/
+script/assets/
