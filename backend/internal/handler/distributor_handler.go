@@ -25,7 +25,10 @@ func (h *distributorHandler) GetAuthenticated(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	json.NewEncoder(w).Encode(distributor)
+	if err := json.NewEncoder(w).Encode(distributor); err != nil {
+		slog.Error("Failed to encode response", "error", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func NewDistributorHandler(service service.DistributorService) DistributorHandler {

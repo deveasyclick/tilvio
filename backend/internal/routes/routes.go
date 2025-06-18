@@ -43,6 +43,7 @@ func Register(db db.Service) *chi.Mux {
 			registerURLRoutes(r, db.DB)
 			registerWorkspaceRoutes(r, db.DB)
 			registerDistributorRoutes(r, db.DB)
+			registerTileRoutes(r, db.DB)
 		})
 
 	})
