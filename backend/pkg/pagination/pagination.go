@@ -1,0 +1,213 @@
+// pkg/pagination/pagination.go
+package pagination
+
+import (
+	"log/slog"
+	"net/url"
+	"strconv"
+	"strings"
+
+	"gorm.io/gorm"
+)
+
+// ParseLimit returns the limit or default 20
+const (
+	DefaultLimit = 20
+	MaxLimit     = 100
+	DefaultPage  = 1
+)
+
+// FilterCondition represents a single filter on a field
+type FilterCondition struct {
+	Field    string
+	Operator string // "=", "LIKE", "IN", ">=", "<=", etc.
+	Value    interface{}
+}
+
+// Options holds pagination and filtering params
+type Options struct {
+	Page     int
+	Limit    int
+	Filters  []FilterCondition
+	SortBy   string // e.g. "created_at desc"
+	Preloads []string
+}
+
+var skipKeys map[string]bool = map[string]bool{
+	"page":     true,
+	"limit":    true,
+	"sort":     true,
+	"preloads": true,
+}
+
+// ParseFiltersFromQuery parses URL query params into FilterConditions
+func ParseFiltersFromQuery(query url.Values) ([]FilterCondition, error) {
+	var filters []FilterCondition
+
+	for key, values := range query {
+		if skipKeys[key] || len(values) == 0 {
+			continue
+		}
+
+		value := values[0]
+
+		field, op := parseFieldAndOperator(key)
+		slog.Info("field and op", "field", field, "op", op)
+		var filterValue interface{} = value
+
+		switch op {
+		case "IN":
+			parts := strings.Split(value, ",")
+			intVals := []int{}
+			allInts := true
+			for _, p := range parts {
+				if iv, err := strconv.Atoi(p); err == nil {
+					intVals = append(intVals, iv)
+				} else {
+					allInts = false
+					break
+				}
+			}
+			if allInts {
+				filterValue = intVals
+			} else {
+				filterValue = parts
+			}
+		case "LIKE":
+			if !strings.HasPrefix(value, "%") {
+				value = "%" + value
+			}
+			if !strings.HasSuffix(value, "%") {
+				value = value + "%"
+			}
+			filterValue = value
+		// For GT, LT, GTE, LTE keep as string, let GORM convert
+		default:
+			// no change
+		}
+
+		filters = append(filters, FilterCondition{
+			Field:    field,
+			Operator: opToSymbol(op),
+			Value:    filterValue,
+		})
+	}
+
+	return filters, nil
+}
+
+func parseFieldAndOperator(param string) (string, string) {
+	ops := []string{"_like", "_in", "_gte", "_lte", "_gt", "_lt"}
+	for _, op := range ops {
+		if strings.HasSuffix(param, op) {
+			field := strings.TrimSuffix(param, op)
+			return field, strings.ToUpper(strings.TrimPrefix(op, "_"))
+		}
+	}
+	return param, "="
+}
+
+func opToSymbol(op string) string {
+	switch op {
+	case "LIKE":
+		return "LIKE"
+	case "IN":
+		return "IN"
+	case "GTE":
+		return ">="
+	case "LTE":
+		return "<="
+	case "GT":
+		return ">"
+	case "LT":
+		return "<"
+	case "=":
+		return "="
+	default:
+		return "="
+	}
+}
+
+// ParsePage returns the page number or default 1
+func ParsePage(pageStr string) int {
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		return DefaultPage
+	}
+	return page
+}
+
+func ParseLimit(limitStr string) int {
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		return DefaultLimit
+	}
+	if limit > MaxLimit {
+		return MaxLimit
+	}
+	return limit
+}
+func ParsePreloads(raw string) []string {
+	if raw == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
+	var preloads []string
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			preloads = append(preloads, trimmed)
+		}
+	}
+	return preloads
+}
+
+// Sample pagination query: ?manufacturer_id_in=0,1&code=33000&manufacturer_Id=1&sort=code desc&preloads=Manufacturer&type_like=floor
+func Paginate[T any](db *gorm.DB, opts Options) (items []T, total int64, err error) {
+	// Count total matching records with filters
+	countDB := db.Model(new(T))
+	countDB = applyFilters(countDB, opts.Filters)
+	if err := countDB.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Apply filters, sorting, limit & offset
+	query := db.Model(new(T))
+	query = applyFilters(query, opts.Filters)
+
+	if opts.SortBy != "" {
+		query = query.Order(opts.SortBy)
+	}
+
+	if opts.Preloads != nil {
+		for _, preload := range opts.Preloads {
+			query = query.Preload(preload)
+		}
+	}
+
+	offset := (opts.Page - 1) * opts.Limit
+	query = query.Offset(offset).Limit(opts.Limit)
+
+	if err := query.Find(&items).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return items, total, nil
+}
+
+// applyFilters adds WHERE clauses for each filter condition
+func applyFilters(db *gorm.DB, filters []FilterCondition) *gorm.DB {
+	for _, f := range filters {
+		switch f.Operator {
+		case "IN":
+			db = db.Where(f.Field+" IN ?", f.Value)
+		case "LIKE":
+			db = db.Where(f.Field+" LIKE ?", f.Value)
+		case "=", ">", "<", ">=", "<=":
+			db = db.Where(f.Field+" "+f.Operator+" ?", f.Value)
+		default:
+			db = db.Where(f.Field+" = ?", f.Value)
+		}
+	}
+	return db
+}
