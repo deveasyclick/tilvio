@@ -9,8 +9,8 @@ type OrderItem struct {
 	OrderID       uint        `json:"orderId"`
 	UnitPrice     float64     `gorm:"not null" json:"unitPrice"`
 	TotalPrice    float64     `gorm:"not null" json:"totalPrice"`
-	ProductID     uint        `json:"productId"`
-	Product       Product     `gorm:"foreignKey:ProductID" json:"product"`
+	TileID        uint        `json:"tileId"`
+	Tile          Tile        `gorm:"foreignKey:TileID" json:"tile"`
 	Quantity      int         `gorm:"not null" json:"quantity"`
 	Weight        float64     `gorm:"not null" json:"weight"`
 	TotalWeight   float64     `gorm:"not null" json:"totalWeight"`

@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Product struct {
+type Tile struct {
 	gorm.Model
 	ManufacturerID uint         `json:"manufacturerId"`
 	Manufacturer   Manufacturer `gorm:"foreignKey:ManufacturerID" json:"manufacturer"`
@@ -13,9 +13,5 @@ type Product struct {
 	Dimension      string       `gorm:"index;not null;type:varchar(50)" json:"dimension"`
 	Type           string       `gorm:"not null;type:varchar(50)" json:"type"`
 	ImageURL       string       `gorm:"type:varchar(255)" json:"imageUrl"`
-	WeightInKg     int          `gorm:"not null" json:"weightInKg"`
-	WorkspaceID    uint         `json:"workspaceId"`
-	Workspace      Workspace    `gorm:"foreignKey:WorkspaceID" json:"workspace"`
-	DistributorID  uint         `json:"distributorId"` // Foreign key
-	CreatedBy      Distributor  `gorm:"foreignKey:DistributorID" json:"createdBy"`
+	WeightInKg     float32      `gorm:"not null" json:"weightInKg"`
 }
