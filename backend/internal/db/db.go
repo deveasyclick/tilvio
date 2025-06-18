@@ -39,7 +39,7 @@ func New() *Service {
 	db.AutoMigrate(
 		&models.Customer{},
 		&models.Manufacturer{},
-		&models.Product{},
+		&models.Tile{},
 		&models.PriceList{},
 		&models.PriceListItem{},
 		&models.Order{},
