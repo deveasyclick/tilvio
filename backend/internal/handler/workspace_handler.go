@@ -60,7 +60,10 @@ func (h *workspaceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(workspace)
+	if err := json.NewEncoder(w).Encode(workspace); err != nil {
+		slog.Error("Failed to encode response", "error", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func (h *workspaceHandler) Update(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +124,10 @@ func (h *workspaceHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(existingWorkspace)
+	if err := json.NewEncoder(w).Encode(existingWorkspace); err != nil {
+		slog.Error("Failed to encode response", "error", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func (h *workspaceHandler) Delete(w http.ResponseWriter, r *http.Request) {
