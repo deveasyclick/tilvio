@@ -3,7 +3,6 @@ import DashboardLayout from '../layouts/dashboard';
 import DashboardHome from '../pages/dashboard/Home';
 import Members from '../pages/members';
 import Loans from '../pages/loans';
-import Products from '../pages/products';
 import { ClerkProvider } from '@clerk/react-router';
 import configs from '../config';
 import Auth from '../pages/auth';
@@ -13,6 +12,7 @@ import WorkspaceOnboarding from '../pages/workspaces/onboarding/onboard';
 import MainLayout from '../layouts/main';
 import ProtectRoutes from './ProtectRoute';
 import QueryProvider from '../providers/QueryProvider';
+import Tiles from '../pages/tiles';
 
 const AppRoutes = () => {
   return (
@@ -35,7 +35,7 @@ const AppRoutes = () => {
                 <Route index element={<DashboardHome />} />
                 <Route path="members" element={<Members />} />
                 <Route path="loans" element={<Loans />} />
-                <Route path="products" element={<Products />} />
+                <Route path="tiles" element={<Tiles />} />
               </Route>
             </Route>
           </Routes>
