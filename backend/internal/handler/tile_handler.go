@@ -40,11 +40,10 @@ type TileResponse struct {
 func (h *tileHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	filters, err := pagination.ParseFiltersFromQuery(r.URL.Query())
 	if err != nil {
-		slog.Error("Invalid filters", "error", err)
+		slog.Error("Invalid filters", "error", err, "query", r.URL.Query())
 		http.Error(w, "Invalid filters", http.StatusBadRequest)
 		return
 	}
-	slog.Info("url query", "filters", r.URL.Query(), "filters", filters)
 	allowedFields := map[string]bool{"code": true, "dimension": true, "type": true, "manufacturers.name": true, "description": true}
 	opts := pagination.Options{
 		Page:            pagination.ParsePage(r.URL.Query().Get("page")),
