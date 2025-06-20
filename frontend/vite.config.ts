@@ -3,10 +3,16 @@ import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
 import eslint from 'vite-plugin-eslint2';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), eslint(), ViteImageOptimizer({})],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   build: {
     assetsInlineLimit: 4096, // 4kb - assets smaller than this will be inlined as base64
     rollupOptions: {

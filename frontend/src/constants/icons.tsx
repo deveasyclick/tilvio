@@ -42,6 +42,7 @@ import {
   ArrowRightIcon,
   CheckIcon,
   Loader2,
+  LayoutGrid,
 } from 'lucide-react';
 
 export const Icons = {
@@ -86,4 +87,5 @@ export const Icons = {
   arrowRight: ArrowRightIcon,
   checkMarkCircle: CheckIcon,
   loader: Loader2,
+  grid: LayoutGrid,
 };

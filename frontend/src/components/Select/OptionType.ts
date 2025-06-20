@@ -2,6 +2,6 @@
  * Common option type for select components
  */
 export type OptionType = {
-  value: string;
+  value: string | number;
   label: string;
 };
