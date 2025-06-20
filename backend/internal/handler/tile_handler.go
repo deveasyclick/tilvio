@@ -36,7 +36,7 @@ type TileResponse struct {
 	TotalPages int           `json:"totalPages"`
 }
 
-// Sample filter query: ?manufacturer_id_in=0,1&code=33000&manufacturer_Id=1&sort=code desc&preloads=Manufacturer&type_like=floor
+// Sample filter query: ?manufacturer_id_in=0,1&code=33000&manufacturer_Id=1&sort=code desc&preloads=Manufacturer&type_like=floor&search=goodwill&search_fields=code,manufactures
 func (h *tileHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	filters, err := pagination.ParseFiltersFromQuery(r.URL.Query())
 	if err != nil {
