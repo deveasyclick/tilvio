@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log/slog"
 	"math"
 	"net/http"
@@ -37,22 +36,23 @@ type TileResponse struct {
 	TotalPages int           `json:"totalPages"`
 }
 
-// Sample filter query: ?manufacturer_id_in=0,1&code=33000&manufacturer_Id=1&sort=code desc&preloads=Manufacturer&type_like=floor
+// Sample filter query: ?manufacturer_id_in=0,1&code=33000&manufacturer_Id=1&sort=code desc&preloads=Manufacturer&type_like=floor&search=goodwill&search_fields=code,manufactures
 func (h *tileHandler) Filter(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("url query", r.URL.Query())
 	filters, err := pagination.ParseFiltersFromQuery(r.URL.Query())
 	if err != nil {
-		slog.Error("Invalid filters", "error", err)
+		slog.Error("Invalid filters", "error", err, "query", r.URL.Query())
 		http.Error(w, "Invalid filters", http.StatusBadRequest)
 		return
 	}
-	slog.Info("url query", "filters", r.URL.Query(), "filters", filters)
+	allowedFields := map[string]bool{"code": true, "dimension": true, "type": true, "manufacturers.name": true, "description": true}
 	opts := pagination.Options{
-		Page:     pagination.ParsePage(r.URL.Query().Get("page")),
-		Limit:    pagination.ParseLimit(r.URL.Query().Get("limit")),
-		Filters:  filters,
-		SortBy:   r.URL.Query().Get("sort"),
-		Preloads: pagination.ParsePreloads(r.URL.Query().Get("preloads")),
+		Page:            pagination.ParsePage(r.URL.Query().Get("page")),
+		Limit:           pagination.ParseLimit(r.URL.Query().Get("limit")),
+		Filters:         filters,
+		SortBy:          r.URL.Query().Get("sort"),
+		Preloads:        pagination.ParsePreloads(r.URL.Query().Get("preloads")),
+		SearchFields:    pagination.ParseSearchFields(r.URL.Query(), allowedFields),
+		SearchJoinQuery: "LEFT JOIN manufacturers ON tiles.manufacturer_id = manufacturers.id AND manufacturers.deleted_at IS NULL",
 	}
 
 	tiles, total, err := h.tileService.Filter(opts)
