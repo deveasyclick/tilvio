@@ -250,16 +250,10 @@ func ParseSearchFields(query url.Values, allowedFields map[string]bool) []string
 	var fields []string
 	for _, part := range parts {
 		trimmed := strings.TrimSpace(part)
-		if trimmed != "" {
+		if trimmed != "" && allowedFields[trimmed] {
 			fields = append(fields, trimmed)
 		}
 	}
 
-	var validFields []string
-	for _, field := range fields {
-		if allowedFields[field] {
-			validFields = append(validFields, field)
-		}
-	}
-	return validFields
+	return fields
 }
