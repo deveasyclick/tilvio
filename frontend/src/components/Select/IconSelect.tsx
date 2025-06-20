@@ -34,7 +34,7 @@ const IconSelect: React.FC<IconSelectProps> = ({
 }) => {
   return (
     <div className="relative">
-      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none top-6">
         <IconWrapper
           name={iconName}
           size={iconSize}
@@ -44,7 +44,7 @@ const IconSelect: React.FC<IconSelectProps> = ({
       <Select
         label={label}
         error={error}
-        className={`pl-10 ${className}`}
+        className={`pl-10 cursor-pointer ${className}`}
         {...props}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
