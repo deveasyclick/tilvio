@@ -44,4 +44,10 @@ export const sidebarNavItems: SidebarNavItemData[] = [
       variant: 'primary',
     },
   },
+  {
+    id: 'tiles',
+    label: 'Tiles',
+    href: '/tiles',
+    iconName: 'grid',
+  },
 ];
