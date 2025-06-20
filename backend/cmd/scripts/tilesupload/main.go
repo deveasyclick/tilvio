@@ -167,7 +167,8 @@ func saveToDatabase(db *gorm.DB, files []UploadedFile, manufacturer string) erro
 }
 
 func parseTileString(s string) (code, dimension string, err error) {
-	parts := strings.Split(s, "_")
+	base := strings.TrimSuffix(s, filepath.Ext(s))
+	parts := strings.Split(base, "_")
 	if len(parts) != 2 {
 		return "", "", fmt.Errorf("invalid format, expected 'code_dimension'")
 	}
