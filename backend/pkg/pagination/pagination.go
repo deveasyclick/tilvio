@@ -26,18 +26,23 @@ type FilterCondition struct {
 
 // Options holds pagination and filtering params
 type Options struct {
-	Page     int
-	Limit    int
-	Filters  []FilterCondition
-	SortBy   string // e.g. "created_at desc"
-	Preloads []string
+	Page            int
+	Limit           int
+	Filters         []FilterCondition
+	SortBy          string // e.g. "created_at desc"
+	Preloads        []string
+	SearchFields    []string
+	SearchJoinQuery string // Optional: JOIN clauses if needed
 }
 
 var skipKeys map[string]bool = map[string]bool{
-	"page":     true,
-	"limit":    true,
-	"sort":     true,
-	"preloads": true,
+	"page":            true,
+	"limit":           true,
+	"sort":            true,
+	"preloads":        true,
+	"searchFields":    true,
+	"searchJoinQuery": true,
+	"search_fields":   true,
 }
 
 // ParseFiltersFromQuery parses URL query params into FilterConditions
@@ -166,14 +171,14 @@ func ParsePreloads(raw string) []string {
 func Paginate[T any](db *gorm.DB, opts Options) (items []T, total int64, err error) {
 	// Count total matching records with filters
 	countDB := db.Model(new(T))
-	countDB = applyFilters(countDB, opts.Filters)
+	countDB = applyFilters(countDB, opts.Filters, opts.SearchFields, opts.SearchJoinQuery)
 	if err := countDB.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	// Apply filters, sorting, limit & offset
 	query := db.Model(new(T))
-	query = applyFilters(query, opts.Filters)
+	query = applyFilters(query, opts.Filters, opts.SearchFields, opts.SearchJoinQuery)
 
 	if opts.SortBy != "" {
 		query = query.Order(opts.SortBy)
@@ -196,8 +201,28 @@ func Paginate[T any](db *gorm.DB, opts Options) (items []T, total int64, err err
 }
 
 // applyFilters adds WHERE clauses for each filter condition
-func applyFilters(db *gorm.DB, filters []FilterCondition) *gorm.DB {
+func applyFilters(db *gorm.DB, filters []FilterCondition, searchFields []string, joinQuery string) *gorm.DB {
 	for _, f := range filters {
+		if f.Field == "search" && f.Value.(string) != "" {
+			value := "%" + f.Value.(string) + "%"
+			if joinQuery != "" {
+				db = db.Joins(joinQuery)
+			}
+			// Build the OR conditions dynamically
+			if len(searchFields) > 0 {
+				conditions := db
+				for i, field := range searchFields {
+					if i == 0 {
+						conditions = conditions.Where(field+" ILIKE ?", value)
+					} else {
+						conditions = conditions.Or(field+" ILIKE ?", value)
+					}
+				}
+				db = conditions
+			}
+			continue
+		}
+
 		switch f.Operator {
 		case "IN":
 			db = db.Where(f.Field+" IN ?", f.Value)
@@ -210,4 +235,31 @@ func applyFilters(db *gorm.DB, filters []FilterCondition) *gorm.DB {
 		}
 	}
 	return db
+}
+
+func ParseSearchFields(query url.Values, allowedFields map[string]bool) []string {
+	if len(allowedFields) == 0 {
+		return nil
+	}
+
+	raw := query.Get("search_fields")
+	if raw == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
+	var fields []string
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			fields = append(fields, trimmed)
+		}
+	}
+
+	var validFields []string
+	for _, field := range fields {
+		if allowedFields[field] {
+			validFields = append(validFields, field)
+		}
+	}
+	return validFields
 }
