@@ -31,7 +31,7 @@ type tileHandler struct {
 
 type TileResponse struct {
 	Total      int64         `json:"total"`
-	Data       []models.Tile `json:"data"`
+	Tiles      []models.Tile `json:"tiles"`
 	Page       int           `json:"page"`
 	Limit      int           `json:"limit"`
 	TotalPages int           `json:"totalPages"`
@@ -67,7 +67,7 @@ func (h *tileHandler) Filter(w http.ResponseWriter, r *http.Request) {
 		Limit:      opts.Limit,
 		Page:       opts.Page,
 		TotalPages: int(math.Ceil(float64(total) / float64(opts.Limit))),
-		Data:       tiles,
+		Tiles:      tiles,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
