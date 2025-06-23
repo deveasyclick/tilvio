@@ -48,12 +48,13 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging-${{ env.GIT_TAG }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging
 
-      - name: Install and Login to Koyeb
+      - name: Install Koyeb CLI
+        run: curl -fsSL https://cli.koyeb.com/install.sh | bash
+
+      - name: Configure Koyeb CLI auth
         run: |
-            curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
-            export PATH="$HOME/.koyeb/bin:$PATH"
-            ~/.koyeb/bin/koyeb login --token ${{ secrets.KOYEB_API_TOKEN }}
-            
+            echo "token: ${{ secrets.KOYEB_API_TOKEN }}" > $HOME/.koyeb.yaml
+
       - name: Deploy to Koyeb Staging
         run: |
           koyeb service update ${{ env.KOYEB_APP_NAME }} \
