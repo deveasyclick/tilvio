@@ -1,8 +1,6 @@
 name: Deploy PR to Staging
 
 on:
-  pull_request:
-    branches: [main, production]
   workflow_dispatch:
     inputs:
       ref:
@@ -12,6 +10,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: staging
 
     env:
       IMAGE_NAME: ghcr.io/deveasyclick/tilvio
