@@ -29,8 +29,7 @@ var (
 func init() {
 	// Load .env file if it exists
 	if err := godotenv.Load(); err != nil {
-		slog.Error("No .env file found, using environment variables")
-		os.Exit(1)
+		slog.Error("No .env file found, using environment variables instead")
 	}
 
 	PORT, _ = strconv.Atoi(os.Getenv("PORT"))
