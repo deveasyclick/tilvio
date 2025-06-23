@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: yourdockerhubusername/your-backend-app
+      IMAGE_NAME: deveasyclick/tilvio
       REGISTRY: ghcr.io
       KOYEB_APP_NAME: tilvio
 
