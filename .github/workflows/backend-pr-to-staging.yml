@@ -50,7 +50,7 @@ jobs:
 
       - name: Install and Login to Koyeb
         run: |
-            curl -fsSL https://cli.koyeb.com/install.sh | bash
+            curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
             export PATH="$HOME/.koyeb/bin:$PATH"
             ~/.koyeb/bin/koyeb login --token ${{ secrets.KOYEB_API_TOKEN }}
             
