@@ -55,3 +55,4 @@ jobs:
         run: |
           koyeb service update ${{ env.KOYEB_APP_NAME }} \
             --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging-${{ env.GIT_TAG }}
+
