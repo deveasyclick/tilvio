@@ -1,6 +1,8 @@
 name: Deploy PR to Staging
 
 on:
+  pull_request:
+    branches: [main, production]
   workflow_dispatch:
     inputs:
       ref:
