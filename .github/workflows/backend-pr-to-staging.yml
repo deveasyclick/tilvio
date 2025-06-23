@@ -54,6 +54,8 @@ jobs:
       - name: Login to Koyeb
         run: koyeb login --token ${{ secrets.KOYEB_API_TOKEN }}
 
+      - name: Add Koyeb CLI to PATH
+        run: echo "$HOME/.koyeb/bin" >> $GITHUB_PATH
       - name: Deploy to Koyeb Staging
         run: |
           koyeb service update ${{ env.KOYEB_APP_NAME }} \
