@@ -15,8 +15,6 @@ require (
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/joho/godotenv v1.5.1
 	github.com/svix/svix-webhooks v1.66.0
-	github.com/unidoc/unipdf/v3 v3.69.0
-	github.com/unidoc/unipdf/v4 v4.0.0
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.26.1
 )
@@ -37,7 +35,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.30.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.21 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -49,21 +46,11 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
-	github.com/unidoc/freetype v0.2.3 // indirect
-	github.com/unidoc/pkcs7 v0.2.0 // indirect
-	github.com/unidoc/timestamp v0.0.0-20200412005513-91597fd3793a // indirect
-	github.com/unidoc/unitype v0.5.1 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
-	golang.org/x/image v0.24.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
-	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
