@@ -10,9 +10,11 @@ RUN go mod download
 COPY backend/ ./
 
 # Build the application
-RUN go build cmd/api/main.go
+RUN go build -o /app/main ./cmd/api
 
-FROM alpine:3.20.6 AS prod
+
+# Stage 2
+FROM alpine:3.21.3 AS prod
 
 WORKDIR /app
 
@@ -27,5 +29,6 @@ RUN chown -R golang:tilvio /app
 # Switch to non-root user
 USER golang
 
-EXPOSE ${PORT}
+EXPOSE 3000
+
 CMD ["./main"]

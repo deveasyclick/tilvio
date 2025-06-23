@@ -9,3 +9,6 @@ frontend
 *.toml
 node_modules/
 backend/main
+backend/assets
+.env
+.git
