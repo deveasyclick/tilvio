@@ -11,6 +11,7 @@ type ENV_VARS = {
   clerkPublishableKey: EnvVar<string>;
   environment: EnvVar<Environments>;
   apiBaseUrl: EnvVar<string>;
+  awsCloudfrontTilesBaseUrl: EnvVar<string>;
 };
 
 const configs: ENV_VARS = {
@@ -23,6 +24,10 @@ const configs: ENV_VARS = {
   },
   apiBaseUrl: {
     value: import.meta.env.VITE_API_BASE_URL,
+    required: true,
+  },
+  awsCloudfrontTilesBaseUrl: {
+    value: import.meta.env.VITE_AWS_CLOUDFRONT_TILES_BASE_URL,
     required: true,
   },
 };

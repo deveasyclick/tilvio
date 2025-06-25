@@ -1,13 +1,15 @@
 import type { Tile } from '@/types/tile';
 import { CardContent, Card } from '@/components/ui/card';
 import Image from '@/components/Image';
+import configs from '@/config';
 
-const TileCard = ({ code, dimension, imageUrl }: Tile) => {
+const awsCloudfrontTilesBaseUrl = configs.awsCloudfrontTilesBaseUrl.value;
+const TileCard = ({ code, dimension, s3Key }: Tile) => {
   return (
     <Card className="bg-black text-white p-0 overflow-hidden rounded-none border-none gap-0">
       <div className="w-full">
         <Image
-          src={imageUrl}
+          src={`${awsCloudfrontTilesBaseUrl}/${s3Key}`}
           alt={code}
           className="w-full h-full object-cover"
         />

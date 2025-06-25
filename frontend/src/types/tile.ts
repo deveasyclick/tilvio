@@ -11,7 +11,7 @@ export interface Tile {
   description: string;
   dimension: string;
   type: string;
-  imageUrl: string;
+  s3Key: string;
   weightInKg: number;
 }
 
