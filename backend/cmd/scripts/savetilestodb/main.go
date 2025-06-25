@@ -7,31 +7,28 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
-	"time"
 
+	"github.com/deveasyclick/tilvio/cmd/scripts"
 	"github.com/deveasyclick/tilvio/internal/config"
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/repository"
 	"github.com/deveasyclick/tilvio/internal/service"
-	s3Client "github.com/deveasyclick/tilvio/pkg/s3"
 	"github.com/deveasyclick/tilvio/pkg/tile"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-type UploadedFile struct {
-	FileName string
-	URL      string
-}
+const (
+	s3BaseImagePath = "images/"
+)
 
-type FailedFile struct {
-	FileName string
-	Error    error
+type File struct {
+	Key  string
+	Name string
 }
 
 func main() {
-	db := DB{}
+	db := scripts.DB{}
 	dbInstance := db.Connect()
 	//defer db.Close()
 
@@ -40,14 +37,14 @@ func main() {
 	}
 	manufacturer := os.Args[1]
 	dir := filepath.Join(config.BASE_URL, "assets", "images", manufacturer)
-	uploaded, failed, err := ParallelUpload(dir, config.AWS_S3_TILES_BUCKET, 5)
+	files, err := GetFileNames(dir, strings.ToLower(manufacturer))
 	if err != nil {
 		log.Fatal("WalkDir error:", err)
 		return
 	}
-	fmt.Printf("✅ %d uploaded, ❌ %d failed\n", len(uploaded), len(failed))
+	fmt.Printf("✅ %d files \n", len(files))
 
-	err = saveToDatabase(dbInstance, uploaded, manufacturer)
+	err = saveToDatabase(dbInstance, files, manufacturer)
 	if err != nil {
 		slog.Error("failed to save to database", "error", err)
 		return
@@ -62,58 +59,34 @@ func CapitalizeFirst(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
-func ParallelUpload(baseDir string, bucket string, workers int) ([]UploadedFile, []FailedFile, error) {
-	var uploaded []UploadedFile
-	var failed []FailedFile
-	var mu sync.Mutex
-	var wg sync.WaitGroup
-
-	fileChan := make(chan string)
-
-	// Start worker goroutines
-	for i := 0; i < workers; i++ {
-		wg.Add(1)
-		go func(workerID int) {
-			defer wg.Done()
-			for path := range fileChan {
-				relPath := strings.TrimPrefix(path, baseDir+"/")
-				key := "images/" + relPath
-
-				url, err := uploadWithRetry(key, path, bucket, 3)
-				mu.Lock()
-				if err != nil {
-					log.Printf("❌ Worker %d failed to upload %s: %v", workerID, relPath, err)
-					failed = append(failed, FailedFile{FileName: relPath, Error: err})
-				} else {
-					uploaded = append(uploaded, UploadedFile{FileName: relPath, URL: url})
-					fmt.Printf("✅ Worker %d uploaded: %s → %s\n", workerID, relPath, url)
-				}
-				mu.Unlock()
-			}
-		}(i)
-	}
-
-	// Walk and send file paths to workers
+/**
+* Get all files in the baseDir and generate there s3 keys based on the local file name and the manufacturer name. The files are already uploaded to s3 and will have this path structure images/${manufacturer}/${code}_${dimension}.png
+ */
+func GetFileNames(baseDir string, manufacturer string) ([]File, error) {
+	var uploaded []File
+	folder := fmt.Sprintf("%s/%s/", s3BaseImagePath, manufacturer)
 	err := filepath.WalkDir(baseDir, func(path string, d os.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return err
 		}
+		relPath := strings.TrimPrefix(path, baseDir+"/")
+		s3Key := folder + relPath
 
-		fileChan <- path
+		uploaded = append(uploaded, File{Key: s3Key, Name: relPath})
 		return nil
 	})
 
-	close(fileChan) // no more files
+	if err != nil {
+		return nil, err
+	}
 
-	wg.Wait() // wait for all workers to finish
-
-	return uploaded, failed, err
+	return uploaded, nil
 }
 
 /**
 * Manufacturer = goodwill, goldencrown, royalcastle
  */
-func saveToDatabase(db *gorm.DB, files []UploadedFile, manufacturer string) error {
+func saveToDatabase(db *gorm.DB, files []File, manufacturer string) error {
 	manufacturerRepo := repository.NewManufacturerRepository(db)
 	manufacturerService := service.NewManufacturerService(manufacturerRepo)
 	DBManufacturer, err := manufacturerService.FindOrCreate(map[string]any{"name": CapitalizeFirst(manufacturer)})
@@ -125,26 +98,26 @@ func saveToDatabase(db *gorm.DB, files []UploadedFile, manufacturer string) erro
 	var tiles []models.Tile
 	var fileWithoutMetadata []string
 	for _, file := range files {
-		code, dimension, err := parseTileString(file.FileName)
+		code, dimension, err := parseTileString(file.Name)
 		if err != nil {
-			slog.Error("failed to parse tile string", "error", err, "file", file.FileName)
+			slog.Error("failed to parse tile string", "error", err, "file", file.Name)
 			continue
 		}
 		tileMedata, err := tile.GetTileMetadata(DBManufacturer.Name, code)
 		if err != nil {
-			slog.Error("failed to get tile metadata", "error", err, "file", file.FileName)
-			fileWithoutMetadata = append(fileWithoutMetadata, file.FileName)
+			slog.Error("failed to get tile metadata", "error", err, "file", file.Name)
+			fileWithoutMetadata = append(fileWithoutMetadata, file.Name)
 			continue
 		}
 
 		tiles = append(tiles, models.Tile{
 			Code:           code,
-			ImageURL:       file.URL,
 			ManufacturerID: DBManufacturer.ID,
 			Dimension:      dimension,
 			WeightInKg:     tileMedata.WeightInKg,
 			Type:           tileMedata.Type,
 			Description:    tileMedata.Description,
+			S3Key:          file.Key,
 		})
 	}
 
@@ -166,6 +139,7 @@ func saveToDatabase(db *gorm.DB, files []UploadedFile, manufacturer string) erro
 	return nil
 }
 
+// parse 40001_400X400.png to 40001 and 400X400
 func parseTileString(s string) (code, dimension string, err error) {
 	base := strings.TrimSuffix(s, filepath.Ext(s))
 	parts := strings.Split(base, "_")
@@ -173,25 +147,4 @@ func parseTileString(s string) (code, dimension string, err error) {
 		return "", "", fmt.Errorf("invalid format, expected 'code_dimension'")
 	}
 	return parts[0], parts[1], nil
-}
-
-func uploadWithRetry(key, path, bucket string, maxRetries int) (string, error) {
-	var lastErr error
-	backoff := time.Second
-
-	for i := 0; i < maxRetries; i++ {
-		url, err := s3Client.Upload(key, path, bucket)
-		if err == nil {
-			return url, nil
-		}
-
-		lastErr = err
-		time.Sleep(backoff)
-		backoff *= 2 // Exponential backoff: 1s → 2s → 4s ...
-
-		// Optionally log each retry
-		log.Printf("Retry %d for %s after error: %v", i+1, path, err)
-	}
-
-	return "", fmt.Errorf("failed after %d retries: %w", maxRetries, lastErr)
 }
