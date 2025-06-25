@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	s3BaseImagePath = "images/"
+	s3BaseImagePath = "images"
 )
 
 type File struct {
