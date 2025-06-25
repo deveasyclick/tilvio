@@ -29,15 +29,15 @@ const ProtectRoutes = () => {
     refetch,
   } = useFetchAuthenticatedDistributor();
 
-  if (isError) {
-    console.log('error fetching distributor', error);
-    return <CustomError refresh={refetch} />;
-  }
-
   if (!isLoaded || isLoading) return <div>Loading...</div>;
 
   if (!isSignedIn) {
     return <Navigate to="/signin" replace />;
+  }
+
+  if (isError) {
+    console.log('error fetching distributor', error);
+    return <CustomError refresh={refetch} />;
   }
 
   const onboardingPath = '/workspaces/onboarding';
