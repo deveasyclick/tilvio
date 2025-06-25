@@ -12,6 +12,6 @@ type Tile struct {
 	Description    string        `gorm:"type:varchar(255)" json:"description"`
 	Dimension      string        `gorm:"index;not null;type:varchar(50)" json:"dimension"`
 	Type           string        `gorm:"not null;type:varchar(50)" json:"type"`
-	ImageURL       string        `gorm:"type:varchar(255)" json:"imageUrl"`
 	WeightInKg     float32       `gorm:"not null" json:"weightInKg"`
+	S3Key          string        `gorm:"type:varchar(255)" json:"s3Key"`
 }
