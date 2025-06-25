@@ -20,7 +20,7 @@ var manufacturerRanges = map[string][]CodeRange{
 		{Min: 33000, Max: 39999, Description: "vitrified and rustic", Type: "floor", WeightInKg: 19.5, Dimension: "300X300"},
 		{Min: 40000, Max: 40999, Description: "vitrified plain", Type: "floor", WeightInKg: 27.5, Dimension: "400X400"},
 		{Min: 40100, Max: 40179, Description: "glazed design", Type: "floor", WeightInKg: 27.5, Dimension: "400X400"},
-		{Min: 40180, Max: 40499, Description: "black glazed", Type: "floor", WeightInKg: 27.5, Dimension: "400X400"},
+		{Min: 40180, Max: 42100, Description: "black glazed", Type: "floor", WeightInKg: 27.5, Dimension: "400X400"},
 		{Min: 40500, Max: 40700, Description: "rustic", Type: "floor", WeightInKg: 27.5, Dimension: "400X400"},
 		{Min: 36100, Max: 36300, Description: "inkject", Type: "wall", WeightInKg: 27, Dimension: "300X600"},
 		{Min: 36700, Max: 36799, Description: "rustic", Type: "floor", WeightInKg: 34, Dimension: "300X600"},
