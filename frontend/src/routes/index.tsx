@@ -24,7 +24,7 @@ const AppRoutes = () => {
         }}>
         <QueryProvider>
           <Routes>
-            <Route path="/signin" element={<Auth />} />
+            <Route path="/signin/*" element={<Auth />} />
 
             <Route element={<ProtectRoutes />}>
               <Route path="/workspaces/onboarding" element={<MainLayout />}>
