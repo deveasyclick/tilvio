@@ -19,10 +19,10 @@ const (
 
 type DistributorService interface {
 	Create(distributor *models.Distributor) error
-	UpdateDistributor(ID uint, distributor *models.Distributor) error
+	UpdateDistributor(ID string, distributor *models.Distributor) error
 	DeleteDistributor(id string) error
 	GetDistributorByEmail(email string) (*models.Distributor, error)
-	GetDistributorByClerkID(clerkID string, preloads ...string) (*models.Distributor, error)
+	GetDistributorByID(ID string, preloads []string) (*models.Distributor, error)
 }
 
 type distributorService struct {
@@ -31,7 +31,7 @@ type distributorService struct {
 
 func (s *distributorService) Create(distributor *models.Distributor) error {
 	// Check if distributor already exists
-	existing, err := s.repo.FindByEmail(distributor.Email)
+	existing, err := s.repo.FindOneWithFields(map[string]any{"email": distributor.Email}, []string{"id"}, nil)
 	if err == nil && existing != nil {
 		return errors.New(errDistributorExists)
 	}
@@ -44,7 +44,7 @@ func (s *distributorService) Create(distributor *models.Distributor) error {
 	return nil
 }
 
-func (s *distributorService) UpdateDistributor(ID uint, distributor *models.Distributor) error {
+func (s *distributorService) UpdateDistributor(ID string, distributor *models.Distributor) error {
 	err := s.repo.Update(ID, distributor)
 	if err != nil {
 		return fmt.Errorf(errFormat, errUpdateDistributor, err)
@@ -55,7 +55,7 @@ func (s *distributorService) UpdateDistributor(ID uint, distributor *models.Dist
 
 func (s *distributorService) DeleteDistributor(id string) error {
 	// Check if distributor exists
-	existing, err := s.repo.FindByID(id)
+	existing, err := s.repo.FindOneWithFields(map[string]any{"id": id}, []string{"id"}, nil)
 	if err != nil || existing == nil {
 		return errors.New(errDistributorNotFound)
 	}
@@ -64,7 +64,7 @@ func (s *distributorService) DeleteDistributor(id string) error {
 }
 
 func (s *distributorService) GetDistributorByEmail(email string) (*models.Distributor, error) {
-	distributor, err := s.repo.FindByEmail(email)
+	distributor, err := s.repo.FindOneWithFields(map[string]any{"email": email}, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf(errFormat, errFindDistributor, err)
 	}
@@ -72,8 +72,8 @@ func (s *distributorService) GetDistributorByEmail(email string) (*models.Distri
 	return distributor, nil
 }
 
-func (s *distributorService) GetDistributorByClerkID(clerkID string, preloads ...string) (*models.Distributor, error) {
-	distributor, err := s.repo.FindByClerkID(clerkID, preloads...)
+func (s *distributorService) GetDistributorByID(ID string, preloads []string) (*models.Distributor, error) {
+	distributor, err := s.repo.FindOneWithFields(map[string]any{"id": ID}, nil, preloads)
 	if err != nil {
 		return nil, fmt.Errorf(errFormat, errFindDistributor, err)
 	}
