@@ -8,6 +8,7 @@ import (
 
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/service"
+	"github.com/deveasyclick/tilvio/pkg/context"
 	"github.com/deveasyclick/tilvio/pkg/types"
 	"github.com/deveasyclick/tilvio/pkg/validator"
 	"github.com/go-chi/chi"
@@ -52,8 +53,8 @@ func (h *workspaceHandler) Create(w http.ResponseWriter, r *http.Request) {
 		Country:          req.Country,
 	}
 
-	distributorClerkId := r.Context().Value("userClerkId").(string)
-	if err := h.service.Create(&workspace, distributorClerkId); err != nil {
+	distributorID := context.GetActiveUserID(r.Context())
+	if err := h.service.Create(&workspace, distributorID); err != nil {
 		slog.Error("failed to create workspace", "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

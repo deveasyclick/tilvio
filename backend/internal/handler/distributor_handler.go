@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/deveasyclick/tilvio/internal/service"
+	"github.com/deveasyclick/tilvio/pkg/context"
 )
 
 type DistributorHandler interface {
@@ -17,10 +18,10 @@ type distributorHandler struct {
 }
 
 func (h *distributorHandler) GetAuthenticated(w http.ResponseWriter, r *http.Request) {
-	distributorClerkId := r.Context().Value("userClerkId").(string)
-	distributor, err := h.service.GetDistributorByClerkID(distributorClerkId, "Workspace")
+	distributorId := context.GetActiveUserID(r.Context())
+	distributor, err := h.service.GetDistributorByID(distributorId, []string{"Workspace"})
 	if err != nil {
-		slog.Error("failed to get distributor", "error", err, "clerkId", distributorClerkId)
+		slog.Error("failed to get distributor", "error", err, "user Id", distributorId)
 		http.Error(w, "failed to get distributor, try again later", http.StatusInternalServerError)
 		return
 	}
