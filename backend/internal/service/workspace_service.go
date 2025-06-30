@@ -17,7 +17,7 @@ const (
 )
 
 type WorkspaceService interface {
-	Create(workspace *models.Workspace, distributorClerkID string) error
+	Create(workspace *models.Workspace, distributorID string) error
 	Update(workspace *models.Workspace) error
 	Delete(ID uint) error
 	GetWorkspace(ID uint) (*models.Workspace, error)
@@ -28,18 +28,13 @@ type workspaceService struct {
 	distributorService DistributorService
 }
 
-func (s *workspaceService) Create(workspace *models.Workspace, distributorClerkID string) error {
-	distributor, err := s.distributorService.GetDistributorByClerkID(distributorClerkID)
-	if err != nil {
-		return fmt.Errorf("error finding distributor by clerkID: %w", err)
-	}
-
-	if err = s.repo.Create(workspace); err != nil {
+func (s *workspaceService) Create(workspace *models.Workspace, distributorID string) error {
+	if err := s.repo.Create(workspace); err != nil {
 		return fmt.Errorf("error creating workspace: %w", err)
 	}
 
 	workspaceID := workspace.ID
-	err = s.distributorService.UpdateDistributor(distributor.ID, &models.Distributor{WorkspaceID: &workspaceID})
+	err := s.distributorService.UpdateDistributor(distributorID, &models.Distributor{WorkspaceID: &workspaceID})
 	if err != nil {
 		return fmt.Errorf("error attaching workspace to distributor: %w", err)
 	}
