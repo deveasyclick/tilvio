@@ -1,7 +1,8 @@
 package types
 
 type CustomSessionClaims struct {
-	UserId *string `json:"user_id"`
+	UserId      string `json:"user_id"`
+	WorkspaceId string `json:"workspace_id"`
 }
 
 const (
