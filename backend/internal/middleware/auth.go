@@ -24,15 +24,13 @@ func AuthRequiredMiddleware(opts ...clerkHttp.AuthorizationOption) func(http.Han
 	return func(next http.Handler) http.Handler {
 		return clerkHttp.WithHeaderAuthorization(opts...)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			claims, ok := clerk.SessionClaimsFromContext(r.Context())
-
 			if !ok || claims == nil {
 				w.WriteHeader(http.StatusUnauthorized)
 				w.Write([]byte(`{"message": "unauthorized"}`))
 				return
 			}
-			customClaims := claims.Custom.(*types.CustomSessionClaims)
-			ctx := context.WithValue(r.Context(), types.ActiveSessionUserId, *customClaims.UserId)
-			next.ServeHTTP(w, r.WithContext(ctx))
+
+			next.ServeHTTP(w, r)
 		}))
 	}
 }

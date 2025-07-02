@@ -1,13 +1,11 @@
 package service
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
 	"strconv"
 
-	"github.com/clerk/clerk-sdk-go/v2/user"
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/pkg/types"
 )
@@ -18,6 +16,7 @@ type WebhookService interface {
 
 type webhookService struct {
 	distributorService DistributorService
+	clerkService       ClerkService
 }
 
 func (s *webhookService) HandleDistributorCreated(data map[string]interface{}) error {
@@ -44,13 +43,8 @@ func (s *webhookService) HandleDistributorCreated(data map[string]interface{}) e
 	if err != nil {
 		return fmt.Errorf("error creating distributor: %w", err)
 	}
-
-	insertedDistributor, err := s.distributorService.GetDistributorByEmail(distributor.Email)
-	if err != nil {
-		slog.Error("error fetching distributor", "error", err)
-	}
-	externalID := strconv.FormatUint(uint64(insertedDistributor.ID), 10)
-	_, err = user.Update(context.Background(), insertedDistributor.ClerkID, &user.UpdateParams{ExternalID: &externalID})
+	externalID := strconv.FormatUint(uint64(distributor.ID), 10)
+	err = s.clerkService.SetExternalID(distributor.ClerkID, externalID)
 
 	if err != nil {
 		slog.Error("error updating clerk user", "error", err)
@@ -61,6 +55,6 @@ func (s *webhookService) HandleDistributorCreated(data map[string]interface{}) e
 	return nil
 }
 
-func NewWebhookService(service DistributorService) WebhookService {
-	return &webhookService{distributorService: service}
+func NewWebhookService(service DistributorService, clerkService ClerkService) WebhookService {
+	return &webhookService{distributorService: service, clerkService: clerkService}
 }

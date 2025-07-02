@@ -33,12 +33,6 @@ func (s *workspaceService) Create(workspace *models.Workspace, distributorID str
 		return fmt.Errorf("error creating workspace: %w", err)
 	}
 
-	workspaceID := workspace.ID
-	err := s.distributorService.UpdateDistributor(distributorID, &models.Distributor{WorkspaceID: &workspaceID})
-	if err != nil {
-		return fmt.Errorf("error attaching workspace to distributor: %w", err)
-	}
-
 	return nil
 }
 
@@ -69,5 +63,5 @@ func (s *workspaceService) GetWorkspace(ID uint) (*models.Workspace, error) {
 }
 
 func NewWorkspaceService(repo repository.WorkspaceRepository, distributorService DistributorService) WorkspaceService {
-	return &workspaceService{repo: repo, distributorService: distributorService}
+	return &workspaceService{repo: repo}
 }

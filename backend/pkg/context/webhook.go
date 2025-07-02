@@ -23,7 +23,3 @@ func GetWebhookEvent(ctx context.Context) *types.WebhookEvent {
 	event, _ := ctx.Value(webhookEventKey).(*types.WebhookEvent)
 	return event
 }
-
-func GetActiveUserID(ctx context.Context) string {
-	return ctx.Value(types.ActiveSessionUserId).(string)
-}

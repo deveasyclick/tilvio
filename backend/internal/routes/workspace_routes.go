@@ -4,6 +4,7 @@ import (
 	"github.com/deveasyclick/tilvio/internal/handler"
 	"github.com/deveasyclick/tilvio/internal/repository"
 	"github.com/deveasyclick/tilvio/internal/service"
+	"github.com/deveasyclick/tilvio/internal/usecases"
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
 )
@@ -13,7 +14,9 @@ func registerWorkspaceRoutes(router chi.Router, db *gorm.DB) {
 	distributorService := service.NewDistributorService(distributorRepo)
 	workspaceRepo := repository.NewWorkspaceRepository(db)
 	workspaceSvc := service.NewWorkspaceService(workspaceRepo, distributorService)
-	workspaceHandler := handler.NewWorkspaceHandler(workspaceSvc)
+	clerkSvc := service.NewClerkService()
+	createWorkspaceUC := usecases.NewCreateWorkspaceUseCase(workspaceSvc, distributorService, clerkSvc)
+	workspaceHandler := handler.NewWorkspaceHandler(workspaceSvc, createWorkspaceUC)
 
 	// All workspace routes require authentication
 	router.Route("/workspaces", func(r chi.Router) {
