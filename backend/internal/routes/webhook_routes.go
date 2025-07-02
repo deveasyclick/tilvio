@@ -11,7 +11,9 @@ import (
 
 func registerWebhookRoutes(r chi.Router, db *gorm.DB) {
 	distributorRepo := repository.NewDistributorRepository(db)
-	webhookSvc := service.NewWebhookService(service.NewDistributorService(distributorRepo))
+	distributorSvc := service.NewDistributorService(distributorRepo)
+	clerkSvc := service.NewClerkService()
+	webhookSvc := service.NewWebhookService(distributorSvc, clerkSvc)
 	webhookHandler := handler.NewWebhookHandler(webhookSvc)
 
 	// Public routes (no auth required, but webhook signature is verified)
