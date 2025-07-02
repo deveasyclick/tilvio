@@ -23,6 +23,7 @@ type DistributorService interface {
 	DeleteDistributor(id string) error
 	GetDistributorByEmail(email string) (*models.Distributor, error)
 	GetDistributorByID(ID string, preloads []string) (*models.Distributor, error)
+	AssignWorkspace(distributorID string, workspaceID uint) error
 }
 
 type distributorService struct {
@@ -79,6 +80,16 @@ func (s *distributorService) GetDistributorByID(ID string, preloads []string) (*
 	}
 
 	return distributor, nil
+}
+
+func (s *distributorService) AssignWorkspace(distributorID string, workspaceID uint) error {
+	// Associate the workspace with the distributor
+	err := s.repo.Update(distributorID, &models.Distributor{WorkspaceID: &workspaceID})
+	if err != nil {
+		return fmt.Errorf("error attaching workspace to distributor: %w", err)
+	}
+
+	return nil
 }
 
 func NewDistributorService(repo repository.DistributorRepository) DistributorService {
