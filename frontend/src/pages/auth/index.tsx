@@ -6,7 +6,11 @@ export default function Auth() {
       <SignIn
         fallbackRedirectUrl="/"
         withSignUp={false}
-        appearance={{ elements: { footerAction: '!hidden' } }}
+        appearance={
+          {
+            /*elements: { footerAction: '!hidden' } */
+          }
+        }
       />
     </main>
   );
