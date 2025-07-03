@@ -3,8 +3,10 @@ package validator
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
+	"github.com/deveasyclick/tilvio/pkg/types"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -12,12 +14,34 @@ var validate *validator.Validate
 
 func init() {
 	validate = validator.New()
+
+	err := validate.RegisterValidation("uniqueDimension", uniqueDimension)
+	if err != nil {
+		slog.Error("failed to register uniqueDimension validation", "error", err)
+	}
 }
 
 type ValidationError struct {
 	Field string `json:"field"`
 	Tag   string `json:"tag"`
 	Value string `json:"value"`
+}
+
+func uniqueDimension(fl validator.FieldLevel) bool {
+	items, ok := fl.Field().Interface().([]types.CreatPriceListItemRequest)
+	if !ok {
+		return false // wrong type
+	}
+
+	seen := make(map[string]bool)
+	for _, item := range items {
+		if seen[item.Dimension] {
+			return false // duplicate found
+		}
+		seen[item.Dimension] = true
+	}
+
+	return true
 }
 
 func ValidateRequest(r *http.Request, req interface{}) []ValidationError {

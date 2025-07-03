@@ -1,8 +1,12 @@
 package error_messages
 
 const (
-	ErrInvalidID            = "invalid ID"
-	ErrEncodeResponseFailed = "failed to encode response"
+	// common
+	ErrInvalidID             = "invalid ID"
+	ErrEncodeResponseFailed  = "failed to encode response"
+	ErrParseID               = "failed to parse ID"
+	ErrInvalidRequestPayload = "invalid request payload"
+	ErrRequestFailed         = "request failed, try again later"
 	// priceList
 	ErrPriceListExists   = "priceList already exists"
 	ErrPriceListNotFound = "priceList not found"
