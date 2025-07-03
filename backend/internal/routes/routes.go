@@ -13,7 +13,6 @@ import (
 
 func Register(db db.Service) *chi.Mux {
 	r := chi.NewRouter()
-
 	r.Use(chiMiddleware.Logger)
 	r.Use(chiMiddleware.Recoverer)
 	// Enable rate limiter of 100 requests per minute per IP
@@ -31,7 +30,7 @@ func Register(db db.Service) *chi.Mux {
 	}))
 
 	r.Route("/api", func(r chi.Router) {
-
+		r.Use(chiMiddleware.SetHeader("Content-Type", "application/json"))
 		// Public routes
 		r.Group(func(r chi.Router) {
 			registerWebhookRoutes(r, db.DB)
@@ -45,6 +44,7 @@ func Register(db db.Service) *chi.Mux {
 			registerDistributorRoutes(r, db.DB)
 			registerTileRoutes(r, db.DB)
 			registerManufacturerRoutes(r, db.DB)
+			registerPriceListRoutes(r, db.DB)
 		})
 
 	})
