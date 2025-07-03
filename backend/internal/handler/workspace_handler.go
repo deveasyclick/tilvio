@@ -8,7 +8,10 @@ import (
 
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/service"
+	"github.com/deveasyclick/tilvio/internal/usecases"
+	"github.com/deveasyclick/tilvio/pkg/context"
 	"github.com/deveasyclick/tilvio/pkg/types"
+	"github.com/deveasyclick/tilvio/pkg/types/error_messages"
 	"github.com/deveasyclick/tilvio/pkg/validator"
 	"github.com/go-chi/chi"
 )
@@ -27,7 +30,8 @@ type WorkspaceHandler interface {
 }
 
 type workspaceHandler struct {
-	service service.WorkspaceService
+	service           service.WorkspaceService
+	createWorkspaceUC usecases.CreateWorkspaceUseCase
 }
 
 func (h *workspaceHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -52,17 +56,22 @@ func (h *workspaceHandler) Create(w http.ResponseWriter, r *http.Request) {
 		Country:          req.Country,
 	}
 
-	distributorClerkId := r.Context().Value("userClerkId").(string)
-	if err := h.service.Create(&workspace, distributorClerkId); err != nil {
-		slog.Error("failed to create workspace", "error", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	authenticatedUser := context.GetAuthenticatedUser(r.Context())
+	err := h.createWorkspaceUC.Execute(usecases.CreateWorkspaceInput{
+		Workspace:     workspace,
+		DistributorID: authenticatedUser.ID,
+		ClerkUserID:   authenticatedUser.ClerkID,
+	})
+
+	if err != nil {
+		slog.Error(error_messages.ErrCreateWorkspace, "error", err)
+		http.Error(w, error_messages.ErrCreateWorkspace, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(workspace); err != nil {
-		slog.Error("Failed to encode response", "error", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		slog.Error(errEncodeResponse, "error", err)
+		http.Error(w, errEncodeResponse, http.StatusInternalServerError)
 	}
 }
 
@@ -143,8 +152,6 @@ func (h *workspaceHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *workspaceHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -162,9 +169,12 @@ func (h *workspaceHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(workspace)
+	if err := json.NewEncoder(w).Encode(workspace); err != nil {
+		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
+		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
+	}
 }
 
-func NewWorkspaceHandler(service service.WorkspaceService) WorkspaceHandler {
-	return &workspaceHandler{service: service}
+func NewWorkspaceHandler(service service.WorkspaceService, createWorkspaceUC usecases.CreateWorkspaceUseCase) WorkspaceHandler {
+	return &workspaceHandler{service: service, createWorkspaceUC: createWorkspaceUC}
 }

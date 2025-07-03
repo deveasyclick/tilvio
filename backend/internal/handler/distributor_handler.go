@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/deveasyclick/tilvio/internal/service"
+	"github.com/deveasyclick/tilvio/pkg/context"
+	"github.com/deveasyclick/tilvio/pkg/types/error_messages"
 )
 
 type DistributorHandler interface {
@@ -17,17 +19,17 @@ type distributorHandler struct {
 }
 
 func (h *distributorHandler) GetAuthenticated(w http.ResponseWriter, r *http.Request) {
-	distributorClerkId := r.Context().Value("userClerkId").(string)
-	distributor, err := h.service.GetDistributorByClerkID(distributorClerkId, "Workspace")
+	user := context.GetAuthenticatedUser(r.Context())
+	distributor, err := h.service.GetDistributorByID(user.ID, []string{"Workspace"})
 	if err != nil {
-		slog.Error("failed to get distributor", "error", err, "clerkId", distributorClerkId)
-		http.Error(w, "failed to get distributor, try again later", http.StatusInternalServerError)
+		slog.Error(error_messages.ErrFindDistributor, "error", err, "user Id", user.ID)
+		http.Error(w, error_messages.ErrFindDistributor, http.StatusInternalServerError)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(distributor); err != nil {
-		slog.Error("Failed to encode response", "error", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
+		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
 	}
 }
 
