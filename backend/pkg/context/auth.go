@@ -7,16 +7,10 @@ import (
 	"github.com/deveasyclick/tilvio/pkg/types"
 )
 
-type AuthenticatedUser struct {
-	ID          string
-	ClerkID     string
-	WorkspaceID string
-}
-
-func GetAuthenticatedUser(ctx context.Context) AuthenticatedUser {
+func GetAuthenticatedUser(ctx context.Context) types.AuthenticatedUser {
 	claims, _ := clerk.SessionClaimsFromContext(ctx)
 	customClaims := claims.Custom.(*types.CustomSessionClaims)
-	authenticatedUser := &AuthenticatedUser{
+	authenticatedUser := &types.AuthenticatedUser{
 		ID:          customClaims.UserId,
 		ClerkID:     claims.Subject,
 		WorkspaceID: customClaims.WorkspaceId,
