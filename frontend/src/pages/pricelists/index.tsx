@@ -12,7 +12,6 @@ import type { SortConfig } from '@/types';
 
 const DEFAULT_FILTERS: PriceListFilter = {
   search: '',
-  name: '',
   status: '',
 };
 
@@ -34,15 +33,14 @@ export default function PriceLists() {
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
 
-    if (filters.name) params.append('dimension_like', filters.name);
-    if (debouncedValue) {
-      params.append('search', debouncedValue);
+    if (debouncedFilter.search) {
+      params.append('search', debouncedFilter.search);
       params.append('search_fields', 'name');
     }
     params.append('page', String(currentPage));
     params.append('preloads', 'PriceListItems');
     return params.toString(); // e.g. size=600X600&page=1
-  }, [debouncedValue, currentPage, filters.name]);
+  }, [debouncedFilter, currentPage]);
 
   const { data, isLoading } = useFilterPriceLists(queryString);
 

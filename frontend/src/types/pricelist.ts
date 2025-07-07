@@ -37,7 +37,6 @@ export type PriceList = {
 
 export interface PriceListFilter {
   search: string;
-  name: string;
   status: PriceListStatus;
 }
 
