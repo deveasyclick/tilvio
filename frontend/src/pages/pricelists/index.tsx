@@ -37,6 +37,7 @@ export default function PriceLists() {
       params.append('search', debouncedFilter.search);
       params.append('search_fields', 'name');
     }
+    if (debouncedFilter.status) params.append('status', debouncedFilter.status);
     params.append('page', String(currentPage));
     params.append('preloads', 'PriceListItems');
     return params.toString(); // e.g. size=600X600&page=1
