@@ -3,8 +3,6 @@ package models
 import (
 	"database/sql/driver"
 	"errors"
-
-	"gorm.io/gorm"
 )
 
 type Role string
@@ -43,7 +41,7 @@ func (r Role) Value() (driver.Value, error) {
 }
 
 type Distributor struct {
-	gorm.Model
+	BaseModel
 	ClerkID     string    `gorm:"uniqueIndex;type:varchar(50)" json:"clerkId"`
 	FirstName   string    `gorm:"not null;type:varchar(100);check:first_name <> ''" json:"firstName" validate:"required,max=100"`
 	LastName    string    `gorm:"not null;type:varchar(100);check:last_name <> ''" json:"lastName" validate:"required,max=100"`
