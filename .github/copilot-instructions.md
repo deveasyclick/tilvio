@@ -15,7 +15,7 @@
 ## Schema
 ```go
 	Workspace struct {
-  gorm.Model
+  BaseModel
 	Name             string
 	Logo             string
 	OrganizationName string
@@ -31,7 +31,7 @@
 }
 
 type Distributor struct {
-	gorm.Model
+	BaseModel
 	FirstName string
 	LastName  string
 	Email     string
@@ -44,7 +44,7 @@ type Distributor struct {
 }
 
 type Customer struct {
-	gorm.Model
+	BaseModel
 	FirstName   string
 	LastName    string
 	PhoneNumber string
@@ -58,7 +58,7 @@ type Customer struct {
 }
 
 type Manufacturer struct {
-	gorm.Model
+	BaseModel
 	Name     string
 	Location string
 	Logo     string
@@ -66,7 +66,7 @@ type Manufacturer struct {
 }
 
 type Order struct {
-	gorm.Model
+	BaseModel
 	DistributorID uint
 	CreatedBy     Distributor
 	CustomerID    uint
@@ -81,7 +81,7 @@ type Order struct {
 }
 
 type OrderItem struct {
-	gorm.Model
+	BaseModel
 	OrderID       uint
 	UnitPrice     float64
 	TotalPrice    float64
@@ -97,7 +97,7 @@ type OrderItem struct {
 }
 
 type PriceList struct {
-	gorm.Model
+	BaseModel
 	Name           string
 	Status         string
 	DistributorID  uint
@@ -109,7 +109,7 @@ type PriceList struct {
 
 
 type PriceListItem struct {
-	gorm.Model
+	BaseModel
 	Price       string
 	Dimension   string
 	PriceListID uint
@@ -119,7 +119,7 @@ type PriceListItem struct {
 
 
 type Product struct {
-	gorm.Model
+	BaseModel
 	ManufacturerID uint
 	Manufacturer   Manufacturer
 	Code           string

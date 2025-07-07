@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Order struct {
-	gorm.Model
+	BaseModel
 	DistributorID uint        `json:"distributorId"` // Foreign key
 	CreatedBy     Distributor `gorm:"foreignKey:DistributorID" json:"createdBy"`
 	CustomerID    uint        `json:"customerId"` // Foreign key

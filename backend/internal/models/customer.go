@@ -1,9 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
 type Customer struct {
-	gorm.Model
+	BaseModel
 	FirstName   string      `gorm:"not null;type:varchar(100);check:first_name <> ''" json:"firstName" validate:"required,max=100"`
 	LastName    string      `gorm:"not null;type:varchar(100);check:last_name <> ''" json:"lastName" validate:"required,max=100"`
 	PhoneNumber string      `gorm:"not null;type:varchar(50)" json:"phoneNumber"`

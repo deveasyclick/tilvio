@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Tile struct {
-	gorm.Model
+	BaseModel
 	ManufacturerID uint          `json:"manufacturer_id"`
 	Manufacturer   *Manufacturer `gorm:"foreignKey:ManufacturerID" json:"manufacturer,omitempty"`
 	Code           string        `gorm:"uniqueIndex;not null;type:varchar(100)" json:"code"`
