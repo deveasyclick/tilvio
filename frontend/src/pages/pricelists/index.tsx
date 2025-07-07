@@ -27,7 +27,7 @@ export default function PriceLists() {
   const [filters, setFiltersState] = useState<PriceListFilter>(DEFAULT_FILTERS);
   const [sortConfig, setSortConfig] =
     useState<PriceListSortConfig>(DEFAULT_SORT);
-  const debouncedValue = useDebounce(filters.search, 750);
+  const debouncedFilter = useDebounce(filters, 750);
   const [selectedPricelists, setSelectedPricelists] = useState<string[]>([]);
 
   const queryString = useMemo(() => {
