@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type PriceList struct {
-	gorm.Model
+	BaseModel
 	Name           string          `gorm:"not null;type:varchar(100);unique" json:"name"`
 	Status         string          `gorm:"not null;type:varchar(20);default:'active'" json:"status"`
 	CreatedByID    uint            `json:"createdById"` // Foreign key
