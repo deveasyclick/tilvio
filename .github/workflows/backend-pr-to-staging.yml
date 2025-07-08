@@ -10,9 +10,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: staging
 
     env:
-      IMAGE_NAME: ghcr.io/deveasyclick/tilvio
+      IMAGE_NAME: deveasyclick/tilvio
       REGISTRY: ghcr.io
       KOYEB_APP_NAME: tilvio-staging
 
@@ -30,7 +32,7 @@ jobs:
         with:
           registry: ${{env.REGISTRY}}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Get short commit SHA
         id: vars
@@ -39,20 +41,24 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: .
+          file: ./Dockerfile
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging-${{ env.GIT_TAG }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging
 
       - name: Install Koyeb CLI
-        run: curl -fsSL https://cli.koyeb.com/install.sh | bash
-
-      - name: Login to Koyeb
-        run: koyeb login --token ${{ secrets.KOYEB_API_TOKEN }}
+        run: |
+            curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
+            export PATH="$HOME/.koyeb/bin:$PATH"
+            
+      - name: Configure Koyeb CLI auth
+        run: |
+            echo "token: ${{ secrets.KOYEB_API_TOKEN }}" > $HOME/.koyeb.yaml
 
       - name: Deploy to Koyeb Staging
         run: |
-          koyeb service update ${{ env.KOYEB_APP_NAME }} \
+           ~/.koyeb/bin/koyeb service update ${{ env.KOYEB_APP_NAME }} \
             --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging-${{ env.GIT_TAG }}
 
