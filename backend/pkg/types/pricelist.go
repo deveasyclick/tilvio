@@ -14,3 +14,7 @@ type CreatePriceListRequest struct {
 type UpdatePriceListRequest struct {
 	Name string `json:"name" validate:"required,min=10"`
 }
+
+type BulkDeletePriceListRequest struct {
+	IDs []uint `json:"ids" validate:"required,min=1"`
+}
