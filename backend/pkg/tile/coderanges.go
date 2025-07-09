@@ -36,3 +36,18 @@ var manufacturerRanges = map[string][]CodeRange{
 		{Min: 12700, Max: 12799, Description: "porcelain rustic", Type: "floor", WeightInKg: 32, Dimension: "600X1200"},
 	},
 }
+
+var Descriptions = []string{
+	"inkjet",
+	"stereo",
+	"crack",
+	"super crack",
+	"glazed",
+	"rustic",
+	"matte and crack",
+	"vitrified",
+	"porcelain vitrified",
+	"nylon face",
+	"porcelain rustic",
+	"super polish",
+}
