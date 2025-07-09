@@ -41,7 +41,7 @@ func (s *priceListService) Create(createPriceListReq *types.CreatePriceListReque
 	// Check if priceList name already exists
 	existing, err := s.repo.FindOneWithFields([]string{"name"}, map[string]any{"name": createPriceListReq.Name})
 	if err != nil && err != gorm.ErrRecordNotFound {
-		slog.Error(error_messages.ErrFindPriceList, "error", err, "name", createPriceListReq.Name)
+		slog.Error(error_messages.ErrCreatePriceList, "error", err, "name", createPriceListReq.Name)
 		return nil, &types.APIERROR{Message: error_messages.ErrCreatePriceList, Code: http.StatusInternalServerError}
 	}
 
@@ -61,6 +61,7 @@ func (s *priceListService) Create(createPriceListReq *types.CreatePriceListReque
 			Price:       priceListItem.Price,
 			Dimension:   priceListItem.Dimension,
 			WorkspaceID: uint(workspaceID),
+			Description: priceListItem.Description,
 		})
 	}
 
