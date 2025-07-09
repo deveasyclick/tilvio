@@ -12,6 +12,7 @@ const (
 	ErrPriceListNotFound = "priceList not found"
 	ErrCreatePriceList   = "error creating priceList"
 	ErrDeletePriceList   = "error deleting priceList"
+	ErrDeletePriceLists  = "error deleting priceLists"
 	ErrUpdatePriceList   = "error updating priceList"
 	ErrFindPriceList     = "error finding priceList"
 	ErrFilterPriceList   = "error filtering priceList"
