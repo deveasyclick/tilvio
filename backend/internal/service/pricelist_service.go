@@ -21,6 +21,7 @@ type PriceListService interface {
 	Filter(opts pagination.Options) ([]models.PriceList, int64, *types.APIERROR)
 	FindOne(ID uint) (*models.PriceList, *types.APIERROR)
 	Exists(ID uint) (bool, *types.APIERROR)
+	BulkDelete(IDs []uint) *types.APIERROR
 }
 
 type priceListService struct {
@@ -138,6 +139,15 @@ func (s *priceListService) Exists(ID uint) (bool, *types.APIERROR) {
 		return false, &types.APIERROR{Message: error_messages.ErrPriceListNotFound, Code: http.StatusNotFound}
 	}
 	return true, nil
+}
+
+func (s *priceListService) BulkDelete(IDs []uint) *types.APIERROR {
+	err := s.repo.BulkDeleteByIds(IDs)
+	if err != nil {
+		slog.Error(error_messages.ErrDeletePriceLists, "error", err)
+		return &types.APIERROR{Message: error_messages.ErrDeletePriceLists, Code: http.StatusInternalServerError}
+	}
+	return nil
 }
 
 func NewPriceListService(repo repository.PriceListRepository) PriceListService {

@@ -14,21 +14,24 @@ func registerPriceListRoutes(router chi.Router, db *gorm.DB) {
 	priceListService := service.NewPriceListService(priceListRepo)
 	workspaceHandler := handler.NewPriceListHandler(priceListService)
 
-	// All workspace routes require authentication
+	// All pricelist routes require authentication
 	router.Route("/pricelists", func(r chi.Router) {
 		r.Post("/", workspaceHandler.Create)
 
-		// Get workspace by ID
+		// Get pricelist by ID
 		r.Get("/filter", workspaceHandler.Filter)
 
-		// Get workspace by ID
+		// Get pricelist by ID
 		r.With(middleware.ValidatePriceListId(db)).Get("/{id}", workspaceHandler.Get)
 
-		// Update workspace by ID
+		// Update pricelist by ID
 		r.With(middleware.ValidatePriceListId(db)).Patch("/{id}", workspaceHandler.Update)
 
-		// Delete workspace by ID
+		// Delete pricelist by ID
 		r.With(middleware.ValidatePriceListId(db)).Delete("/{id}", workspaceHandler.Delete)
+
+		// Delete many pricelists by IDs
+		r.Post("/delete/bulk", workspaceHandler.BulkDelete)
 
 	})
 }
