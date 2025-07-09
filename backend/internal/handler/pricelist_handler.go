@@ -23,6 +23,7 @@ type PriceListHandler interface {
 	Get(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
+	BulkDelete(w http.ResponseWriter, r *http.Request)
 }
 
 type priceListHandler struct {
@@ -150,6 +151,25 @@ func (h *priceListHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *priceListHandler) BulkDelete(w http.ResponseWriter, r *http.Request) {
+	var req types.BulkDeletePriceListRequest
+	if errors := validator.ValidateRequest(r, &req); len(errors) > 0 {
+		slog.Error(error_messages.ErrInvalidRequestPayload, "errors", errors)
+		validator.WriteValidationResponse(w, errors)
+		return
+	}
+
+	if err := h.service.BulkDelete(req.IDs); err != nil {
+		slog.Error(error_messages.ErrDeletePriceList, "error", err, "ids", req.IDs)
+		http.Error(w, error_messages.ErrDeletePriceList, http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(types.APIResult{Data: map[string][]uint{"ids": req.IDs}, Message: "success", Code: http.StatusOK}); err != nil {
+		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
+		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
+	}
+}
 func NewPriceListHandler(service service.PriceListService) PriceListHandler {
 	return &priceListHandler{service: service}
 }

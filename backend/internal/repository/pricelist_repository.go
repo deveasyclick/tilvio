@@ -12,6 +12,7 @@ type PriceListRepository interface {
 	Create(priceList *models.PriceList) error
 	Update(ID uint, priceList *models.PriceList) error
 	DeleteByID(ID string) error
+	BulkDeleteByIds(IDs []uint) error
 }
 
 type priceListRepository struct {
@@ -48,6 +49,13 @@ func (r *priceListRepository) Update(ID uint, priceList *models.PriceList) error
 }
 func (r *priceListRepository) DeleteByID(ID string) error {
 	return r.db.Where(whereID, ID).Delete(&models.PriceList{}).Error
+}
+
+func (r *priceListRepository) BulkDeleteByIds(IDs []uint) error {
+	return r.db.
+		Where("id IN ?", IDs).
+		Delete(&models.PriceList{}).
+		Error
 }
 
 func NewPriceListRepository(db *gorm.DB) PriceListRepository {
