@@ -2,12 +2,10 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type URL struct {
-	gorm.Model
+	BaseModel
 	// ShortCode is the code used to access the original URL
 	ShortCode string `gorm:"unique;index;type:varchar(32);check:short_code <> ''" json:"short_code" validate:"required,max=32"`
 	// OriginalUrl is the full, original URL that was shortened

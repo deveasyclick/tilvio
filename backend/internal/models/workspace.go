@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Workspace struct {
-	gorm.Model
+	BaseModel
 	Name             string        `gorm:"not null;unique;index;type:varchar(50);check:name <> ''" json:"name" validate:"required,max=50"`
 	Logo             string        `gorm:"type:varchar(100)" json:"logo"`
 	OrganizationName string        `gorm:"not null;type:varchar(50);check:organization_name <> ''" json:"organizationName" validate:"required,max=50"`

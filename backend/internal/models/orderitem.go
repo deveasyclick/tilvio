@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type OrderItem struct {
-	gorm.Model
+	BaseModel
 	OrderID       uint        `json:"orderId"`
 	UnitPrice     float64     `gorm:"not null" json:"unitPrice"`
 	TotalPrice    float64     `gorm:"not null" json:"totalPrice"`
