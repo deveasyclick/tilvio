@@ -3,6 +3,7 @@ package validator
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -63,7 +64,7 @@ func ValidateRequest(r *http.Request, req interface{}) []ValidationError {
 				validationErrors = append(validationErrors, ValidationError{
 					Field: err.Field(),
 					Tag:   err.Tag(),
-					Value: err.Param(),
+					Value: fmt.Sprintf("%v", err.Value()),
 				})
 			}
 		}
