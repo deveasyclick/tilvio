@@ -16,6 +16,7 @@ export type PriceListItem = {
   deletedAt?: string | null;
   price: number;
   dimension: string;
+  description: string;
   priceListId: number;
   workspaceId: number;
   workspace?: Workspace;
