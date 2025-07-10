@@ -10,6 +10,7 @@ type IconInputProps = {
   className?: string;
   id?: string;
   inputClassName?: string;
+  value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const IconInput: React.FC<IconInputProps> = ({
@@ -20,6 +21,7 @@ const IconInput: React.FC<IconInputProps> = ({
   iconName,
   inputClassName,
   onChange,
+  value,
 }) => {
   return (
     <div className="relative md:w-64 md:w-96">
@@ -33,6 +35,7 @@ const IconInput: React.FC<IconInputProps> = ({
         name={name}
         className={inputClassName}
         onChange={onChange}
+        value={value}
       />
     </div>
   );

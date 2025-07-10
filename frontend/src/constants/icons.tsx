@@ -43,6 +43,7 @@ import {
   CheckIcon,
   Loader2,
   LayoutGrid,
+  DollarSign,
 } from 'lucide-react';
 
 export const Icons = {
@@ -88,4 +89,5 @@ export const Icons = {
   checkMarkCircle: CheckIcon,
   loader: Loader2,
   grid: LayoutGrid,
+  dollar: DollarSign,
 };

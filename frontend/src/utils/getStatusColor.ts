@@ -1,6 +1,6 @@
-import type { MemberStatus } from '../types/member';
+import type { Status } from '@/types';
 
-export const getStatusColor = (status: MemberStatus) => {
+export const getStatusColor = (status: Status) => {
   switch (status) {
     case 'active':
       return 'bg-green-500';
