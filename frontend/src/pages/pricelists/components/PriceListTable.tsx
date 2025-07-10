@@ -3,7 +3,7 @@ import Table from '../../../components/Table';
 import type { TableColumn } from '../../../components/Table/types';
 import type { PriceList, PriceListSortField } from '@/types/pricelist';
 import type { SortConfig, Status } from '@/types';
-import PriceListDialog from './PriceListDialog';
+import PriceListItemViewDialog from './PriceListItemViewDialog';
 
 interface PriceListTableProps {
   pricelists: PriceList[];
@@ -38,7 +38,7 @@ const columns: TableColumn<PriceList, PriceListSortField>[] = [
     header: 'Price Lists',
     sortable: false,
     accessor: (pricelist) => (
-      <PriceListDialog priceListItems={pricelist.priceListItems} />
+      <PriceListItemViewDialog priceListItems={pricelist.priceListItems} />
     ),
   },
 ];
