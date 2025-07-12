@@ -39,12 +39,15 @@ func uniqueDimension(fl validator.FieldLevel) bool {
 		return false // wrong type
 	}
 
-	seen := make(map[string]bool)
+	seen := make(map[string]map[string]bool)
 	for _, item := range items {
-		if seen[item.Dimension] {
+		if seen[item.Dimension] == nil {
+			seen[item.Dimension] = make(map[string]bool)
+		}
+		if seen[item.Dimension][item.Description] {
 			return false // duplicate found
 		}
-		seen[item.Dimension] = true
+		seen[item.Dimension][item.Description] = true
 	}
 
 	return true
