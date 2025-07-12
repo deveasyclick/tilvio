@@ -19,7 +19,7 @@ const resetButtonClasses =
 const filterPanelClasses =
   'p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800';
 
-interface MemberFiltersProps {
+interface TileFiltersProps {
   filters: TileFilters;
   onFilterChange: (filters: Partial<TileFilters>) => void;
   onResetFilters: () => void;
@@ -28,7 +28,7 @@ interface MemberFiltersProps {
   manufacturers: Manufacturer[];
 }
 
-const TileFilters: React.FC<MemberFiltersProps> = ({
+const TileFilters: React.FC<TileFiltersProps> = ({
   filters,
   onFilterChange,
   onResetFilters,
