@@ -38,6 +38,8 @@ var manufacturerRanges = map[string][]CodeRange{
 }
 
 var Descriptions = []string{
+	"design",
+	"plain",
 	"inkjet",
 	"stereo",
 	"crack",
