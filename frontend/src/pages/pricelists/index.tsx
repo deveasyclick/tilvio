@@ -6,9 +6,17 @@ import {
 } from './components';
 import Pagination from '../../components/Pagination';
 import type { PriceListFilter, PriceListSortField } from '@/types/pricelist';
-import { useFilterPriceLists } from '@/api/pricelists';
+import { useAddPriceList, useFilterPriceLists } from '@/api/pricelists';
 import useDebounce from '@/hooks/useDebounce';
 import type { SortConfig } from '@/types';
+import {
+  CreatePriceListSchema,
+  type CreatePriceList,
+} from '@/schemas/pricelists';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { DEFAULT_PRICELIST_ITEMS } from './constants';
+import { toast } from 'sonner';
 
 const DEFAULT_FILTERS: PriceListFilter = {
   search: '',
@@ -30,6 +38,14 @@ export default function PriceLists() {
   const debouncedFilter = useDebounce(filters, 750);
   const [selectedPricelists, setSelectedPricelists] = useState<string[]>([]);
 
+  const createPricelistForm = useForm<CreatePriceList>({
+    resolver: zodResolver(CreatePriceListSchema),
+    defaultValues: {
+      name: '',
+      price_list_items: DEFAULT_PRICELIST_ITEMS,
+    },
+  });
+
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
 
@@ -44,7 +60,7 @@ export default function PriceLists() {
   }, [debouncedFilter, currentPage]);
 
   const { data, isLoading } = useFilterPriceLists(queryString);
-
+  const { mutate: createPricelist, status } = useAddPriceList();
   const handleSort = useCallback(
     (field: PriceListSortField) => {
       setSortConfig({
@@ -108,11 +124,14 @@ export default function PriceLists() {
   return (
     <div className="p-4">
       {/* PriceList actions (add, import, export, delete) */}
-      <PriceListActions
-        selectedCount={selectedPricelists.length}
-        onAddPriceList={handleAddPricelist}
-        onDeleteSelected={handleDeleteSelected}
-      />
+      <FormProvider {...createPricelistForm}>
+        <PriceListActions
+          selectedCount={selectedPricelists.length}
+          onAddPriceList={handleAddPricelist}
+          onDeleteSelected={handleDeleteSelected}
+          status={status}
+        />
+      </FormProvider>
 
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
         {/* Filters */}
