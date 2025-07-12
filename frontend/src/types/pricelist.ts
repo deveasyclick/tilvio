@@ -9,6 +9,10 @@ export type PriceListResponse = FilterResponse<{
 
 export type FilterPriceListResponse = APIResponse<PriceListResponse>;
 
+export type BulkDeletePriceListResponse = APIResponse<{
+  ids: string[];
+}>;
+
 export type PriceListItem = {
   id: number;
   createdAt: string;
