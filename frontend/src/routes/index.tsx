@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import DashboardLayout from '../layouts/dashboard';
 import DashboardHome from '../pages/dashboard/Home';
-import Members from '../pages/members';
 import PriceLists from '../pages/pricelists';
 import Loans from '../pages/loans';
 import { ClerkProvider } from '@clerk/react-router';
@@ -34,7 +33,6 @@ const AppRoutes = () => {
 
               <Route path="/" element={<DashboardLayout />}>
                 <Route index element={<DashboardHome />} />
-                <Route path="members" element={<Members />} />
                 <Route path="pricelists" element={<PriceLists />} />
                 <Route path="loans" element={<Loans />} />
                 <Route path="tiles" element={<Tiles />} />
