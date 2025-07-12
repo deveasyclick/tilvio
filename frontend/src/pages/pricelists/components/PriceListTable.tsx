@@ -62,7 +62,7 @@ const PriceListTable: React.FC<PriceListTableProps> = ({
       selectedItems={selectedPricelists}
       onSelectItem={onSelectPricelist}
       onSelectAll={onSelectAll}
-      emptyMessage="No members found"
+      emptyMessage="No pricelists found"
     />
   );
 };
