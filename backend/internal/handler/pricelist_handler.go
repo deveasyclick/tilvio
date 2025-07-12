@@ -10,6 +10,7 @@ import (
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/service"
 	"github.com/deveasyclick/tilvio/pkg/context"
+	"github.com/deveasyclick/tilvio/pkg/httphelper"
 	"github.com/deveasyclick/tilvio/pkg/pagination"
 	"github.com/deveasyclick/tilvio/pkg/types"
 	"github.com/deveasyclick/tilvio/pkg/types/error_messages"
@@ -65,14 +66,12 @@ func (h *priceListHandler) Create(w http.ResponseWriter, r *http.Request) {
 	authenticatedUser := context.GetAuthenticatedUser(r.Context())
 	pricelist, err := h.service.Create(&req, authenticatedUser)
 	if err != nil {
-		slog.Error(error_messages.ErrCreatePriceList, "error", err)
-		http.Error(w, err.Message, err.Code)
+		httphelper.WriteJSONError(w, error_messages.ErrCreatePriceList, err)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(pricelist); err != nil {
-		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
-		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
+		slog.Warn(error_messages.ErrEncodeResponseFailed, "error", err)
 	}
 }
 

@@ -12,26 +12,26 @@ import (
 func registerPriceListRoutes(router chi.Router, db *gorm.DB) {
 	priceListRepo := repository.NewPriceListRepository(db)
 	priceListService := service.NewPriceListService(priceListRepo)
-	workspaceHandler := handler.NewPriceListHandler(priceListService)
+	priceListHandler := handler.NewPriceListHandler(priceListService)
 
 	// All pricelist routes require authentication
 	router.Route("/pricelists", func(r chi.Router) {
-		r.Post("/", workspaceHandler.Create)
+		r.Post("/", priceListHandler.Create)
 
 		// Get pricelist by ID
-		r.Get("/filter", workspaceHandler.Filter)
+		r.Get("/filter", priceListHandler.Filter)
 
 		// Get pricelist by ID
-		r.With(middleware.ValidatePriceListId(db)).Get("/{id}", workspaceHandler.Get)
+		r.With(middleware.ValidatePriceListId(db)).Get("/{id}", priceListHandler.Get)
 
 		// Update pricelist by ID
-		r.With(middleware.ValidatePriceListId(db)).Patch("/{id}", workspaceHandler.Update)
+		r.With(middleware.ValidatePriceListId(db)).Patch("/{id}", priceListHandler.Update)
 
 		// Delete pricelist by ID
-		r.With(middleware.ValidatePriceListId(db)).Delete("/{id}", workspaceHandler.Delete)
+		r.With(middleware.ValidatePriceListId(db)).Delete("/{id}", priceListHandler.Delete)
 
 		// Delete many pricelists by IDs
-		r.Post("/delete/bulk", workspaceHandler.BulkDelete)
+		r.Post("/delete/bulk", priceListHandler.BulkDelete)
 
 	})
 }
