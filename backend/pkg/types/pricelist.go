@@ -8,7 +8,7 @@ type CreatPriceListItemRequest struct {
 
 // Using camel case for json fields because the json field is case-insensitive. For example pricelistitems in the request body will match priceListItems in the struct.
 type CreatePriceListRequest struct {
-	Name           string                      `json:"name"  validate:"required,min=10"`
+	Name           string                      `json:"name"  validate:"required,min=5"`
 	PriceListItems []CreatPriceListItemRequest `json:"price_list_items" validate:"required,min=1,uniqueDimension,dive"`
 }
 
