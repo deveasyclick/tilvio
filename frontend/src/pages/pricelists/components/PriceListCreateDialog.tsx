@@ -93,7 +93,6 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
   className,
   status,
 }) => {
-  console.log('status', { status });
   const [open, setOpen] = useState(false);
   const form = useFormContext<CreatePriceList>();
 
