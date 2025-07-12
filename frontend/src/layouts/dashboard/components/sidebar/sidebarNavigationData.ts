@@ -25,16 +25,6 @@ export const sidebarNavItems: SidebarNavItemData[] = [
     iconName: 'apps',
   },
   {
-    id: 'members',
-    label: 'Members',
-    href: '/members',
-    iconName: 'userCircle',
-    badge: {
-      text: 'Pro',
-      variant: 'gray',
-    },
-  },
-  {
     id: 'pricelists',
     label: 'Price Lists',
     href: '/pricelists',
