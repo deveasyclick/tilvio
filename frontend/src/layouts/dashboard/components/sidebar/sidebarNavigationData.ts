@@ -35,6 +35,12 @@ export const sidebarNavItems: SidebarNavItemData[] = [
     },
   },
   {
+    id: 'pricelists',
+    label: 'Price Lists',
+    href: '/pricelists',
+    iconName: 'dollar',
+  },
+  {
     id: 'loans',
     label: 'Loans',
     href: '/loans',

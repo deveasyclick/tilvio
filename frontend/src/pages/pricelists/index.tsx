@@ -1,0 +1,190 @@
+import { useState, useCallback, useMemo } from 'react';
+import {
+  PriceListTable,
+  PriceListActions,
+  PriceListFilters,
+} from './components';
+import Pagination from '../../components/Pagination';
+import type { PriceListFilter, PriceListSortField } from '@/types/pricelist';
+import { useAddPriceList, useFilterPriceLists } from '@/api/pricelists';
+import useDebounce from '@/hooks/useDebounce';
+import type { SortConfig } from '@/types';
+import {
+  CreatePriceListSchema,
+  type CreatePriceList,
+} from '@/schemas/pricelists';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { DEFAULT_PRICELIST_ITEMS } from './constants';
+import { toast } from 'sonner';
+
+const DEFAULT_FILTERS: PriceListFilter = {
+  search: '',
+  status: '',
+};
+
+type PriceListSortConfig = SortConfig<PriceListSortField>;
+
+const DEFAULT_SORT: PriceListSortConfig = {
+  field: 'name',
+  direction: 'asc',
+};
+
+export default function PriceLists() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFiltersState] = useState<PriceListFilter>(DEFAULT_FILTERS);
+  const [sortConfig, setSortConfig] =
+    useState<PriceListSortConfig>(DEFAULT_SORT);
+  const debouncedFilter = useDebounce(filters, 750);
+  const [selectedPricelists, setSelectedPricelists] = useState<string[]>([]);
+
+  const createPricelistForm = useForm<CreatePriceList>({
+    resolver: zodResolver(CreatePriceListSchema),
+    defaultValues: {
+      name: '',
+      price_list_items: DEFAULT_PRICELIST_ITEMS,
+    },
+  });
+
+  const queryString = useMemo(() => {
+    const params = new URLSearchParams();
+
+    if (debouncedFilter.search) {
+      params.append('search', debouncedFilter.search);
+      params.append('search_fields', 'name');
+    }
+    if (debouncedFilter.status) params.append('status', debouncedFilter.status);
+    params.append('page', String(currentPage));
+    params.append('preloads', 'PriceListItems');
+    return params.toString(); // e.g. size=600X600&page=1
+  }, [debouncedFilter, currentPage]);
+
+  const { data, isLoading } = useFilterPriceLists(queryString);
+  const { mutate: createPricelist, status } = useAddPriceList();
+  const handleSort = useCallback(
+    (field: PriceListSortField) => {
+      setSortConfig({
+        field,
+        direction:
+          sortConfig.field === field && sortConfig.direction === 'asc'
+            ? 'desc'
+            : 'asc',
+      });
+    },
+    [setSortConfig, sortConfig],
+  );
+
+  // Handle priceLists selection
+  const handleSelectPricelists = useCallback(
+    (id: string, isSelected: boolean) => {
+      setSelectedPricelists((prev) => {
+        if (isSelected) {
+          return [...prev, id];
+        } else {
+          return prev.filter((priceListId) => priceListId !== id);
+        }
+      });
+    },
+    [],
+  );
+
+  // Handle select all pricelists
+  const handleSelectAll = useCallback(
+    (isSelected: boolean) => {
+      if (isSelected) {
+        setSelectedPricelists(
+          data?.price_lists.map((priceLists) => priceLists.id.toString()) ?? [],
+        );
+      } else {
+        setSelectedPricelists([]);
+      }
+    },
+    [data?.price_lists],
+  );
+
+  // Set filters with partial updates
+  const setFilters = useCallback((newFilters: Partial<PriceListFilter>) => {
+    setFiltersState((prev) => ({ ...prev, ...newFilters }));
+    setCurrentPage(1); // Reset to first page when filters change
+  }, []);
+
+  // Placeholder handlers for CRUD operations
+  const handleAddPricelist = async (data: CreatePriceList) => {
+    createPricelistForm.clearErrors();
+    try {
+      createPricelist(data, {
+        onSuccess: async () => {
+          toast.success('Pricelist created successfully!');
+        },
+        onError: (err) => {
+          console.error('Failed to create pricelist:', err);
+          createPricelistForm.setError('root', {
+            message:
+              err instanceof Error
+                ? err.message
+                : 'Failed to create pricelist. Please try again.',
+            type: 'server',
+          });
+        },
+      });
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      createPricelistForm.setError('root', {
+        message: 'An unexpected error occurred. Please try again.',
+        type: 'server',
+      });
+    }
+  };
+
+  const handleDeleteSelected = useCallback(() => {
+    alert(
+      `Delete ${selectedPricelists.length} pricelists functionality will be implemented in the next phase`,
+    );
+    setSelectedPricelists([]);
+  }, [selectedPricelists]);
+
+  if (isLoading) return <div>Loading...</div>;
+  return (
+    <div className="p-4">
+      {/* PriceList actions (add, import, export, delete) */}
+      <FormProvider {...createPricelistForm}>
+        <PriceListActions
+          selectedCount={selectedPricelists.length}
+          onAddPriceList={handleAddPricelist}
+          onDeleteSelected={handleDeleteSelected}
+          status={status}
+        />
+      </FormProvider>
+
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+        {/* Filters */}
+        <PriceListFilters filters={filters} onFilterChange={setFilters} />
+
+        {/* PriceList table */}
+        <PriceListTable
+          pricelists={data?.price_lists ?? []}
+          sortConfig={sortConfig}
+          onSort={handleSort}
+          selectedPricelists={selectedPricelists}
+          onSelectPricelist={handleSelectPricelists}
+          onSelectAll={handleSelectAll}
+        />
+
+        {/* Pagination */}
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
+            Showing{' '}
+            <span className="font-medium">{data?.price_lists.length}</span> of{' '}
+            <span className="font-medium">{data?.total}</span> pricelists
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.totalPages ?? 0}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
