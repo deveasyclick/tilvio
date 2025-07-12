@@ -1,6 +1,9 @@
 import React from 'react';
 import IconWrapper from '../../../components/IconWrapper/IconWrapper';
 import Button from '../../../components/Button/Button';
+import CreatePriceListDialog from './PriceListCreateDialog';
+import type { CreatePriceList } from '@/schemas/pricelists';
+import type { MutationStatus } from '@tanstack/react-query';
 
 // Common button classes for consistent styling
 const buttonBaseClasses =
@@ -10,14 +13,16 @@ const dangerButtonClasses = `${buttonBaseClasses} text-white bg-error hover:bg-r
 
 interface PriceListActionsProps {
   selectedCount: number;
-  onAddPriceList: () => void;
+  onAddPriceList: (data: CreatePriceList) => void;
   onDeleteSelected: () => void;
+  status: MutationStatus;
 }
 
 const PriceListActions: React.FC<PriceListActionsProps> = ({
   selectedCount,
   onAddPriceList,
   onDeleteSelected,
+  status,
 }) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
@@ -27,13 +32,11 @@ const PriceListActions: React.FC<PriceListActionsProps> = ({
       </h1>
 
       <div className="flex flex-wrap gap-2">
-        <Button
-          type="button"
-          onClick={onAddPriceList}
-          className={primaryButtonClasses}>
-          <IconWrapper name="plus" size="16" className="mr-2" />
-          Add Pricelists
-        </Button>
+        <CreatePriceListDialog
+          className={primaryButtonClasses}
+          onAddPriceList={onAddPriceList}
+          status={status}
+        />
 
         {selectedCount > 0 && (
           <Button
