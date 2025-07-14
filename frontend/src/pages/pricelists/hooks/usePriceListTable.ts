@@ -1,8 +1,11 @@
-import { useFilterPriceLists } from '@/api/pricelists';
+import { useDeletePriceLists, useFilterPriceLists } from '@/api/pricelists';
+import { useErrorToast } from '@/hooks';
 import useDebounce from '@/hooks/useDebounce';
 import type { SortConfig } from '@/types';
 import type { PriceListFilter, PriceListSortField } from '@/types/pricelist';
+import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 const DEFAULT_FILTERS: PriceListFilter = {
   search: '',
@@ -23,6 +26,8 @@ const useCreatePricelist = () => {
   const [sortConfig, setSortConfig] =
     useState<PriceListSortConfig>(DEFAULT_SORT);
   const debouncedFilter = useDebounce(filters, 750);
+  const errorToast = useErrorToast();
+  const queryClient = useQueryClient();
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
 
@@ -37,6 +42,7 @@ const useCreatePricelist = () => {
   }, [debouncedFilter, currentPage]);
 
   const { data, isLoading } = useFilterPriceLists(queryString);
+  const { mutate: deletePricelists } = useDeletePriceLists();
   const handleSort = (field: PriceListSortField) => {
     setSortConfig({
       field,
@@ -75,11 +81,32 @@ const useCreatePricelist = () => {
     setCurrentPage(1); // Reset to first page when filters change
   };
 
-  const handleDeleteSelected = () => {
-    alert(
-      `Delete ${selectedPricelists.length} pricelists functionality will be implemented in the next phase`,
-    );
-    setSelectedPricelists([]);
+  const handleDeleteSelected = async () => {
+    try {
+      await deletePricelists(
+        selectedPricelists.map((id) => Number(id)),
+        {
+          onSuccess: () => {
+            toast.success('Pricelists deleted successfully!');
+            queryClient.invalidateQueries({ queryKey: ['pricelists'] });
+            setSelectedPricelists([]);
+          },
+          onError: (err) => {
+            console.error('Error deleting pricelists:', err);
+            errorToast({
+              title: `Error deleting pricelists`,
+              description: `${err.message}`,
+            });
+          },
+        },
+      );
+    } catch (err) {
+      console.error('Error deleting pricelists:', err);
+      errorToast({
+        title: 'Error deleting pricelists',
+        description: 'Error deleting pricelists',
+      });
+    }
   };
 
   return {
