@@ -3,9 +3,7 @@ import { useFetchWithAuth } from '../hooks/fetch';
 import { getConfig } from '../config';
 import { HTTP_METHODS } from '../types/http';
 import type {
-  BulkDeletePriceListResponse,
   FilterPriceListResponse,
-  PriceList,
   PriceListResponse,
 } from '@/types/pricelist';
 import type { CreatePriceList } from '@/schemas/pricelists';
@@ -25,21 +23,15 @@ export const useFilterPriceLists = (filter: string) => {
   });
 };
 
-export const useDeletePriceLists = (priceListIds: PriceList[]) => {
+export const useDeletePriceLists = () => {
   const { fetchWithAuth } = useFetchWithAuth();
 
-  return useQuery<
-    BulkDeletePriceListResponse,
-    Error,
-    BulkDeletePriceListResponse['data']
-  >({
-    queryKey: ['pricelists', priceListIds],
-    queryFn: () =>
-      fetchWithAuth<BulkDeletePriceListResponse>(`${API_URL}`, {
-        method: HTTP_METHODS.DELETE,
+  return useMutation({
+    mutationFn: (priceListIds: number[]) =>
+      fetchWithAuth(`${API_URL}/delete/bulk`, {
+        method: 'POST',
         body: JSON.stringify({ ids: priceListIds }),
       }),
-    select: (response) => response.data ?? [],
   });
 };
 
