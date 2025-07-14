@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import {
   ColumnDef,
@@ -12,7 +11,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,13 +35,13 @@ import {
   type CreatePriceList,
   type CreatePriceListItem,
 } from '@/schemas/pricelists';
-import IconWrapper from '@/components/IconWrapper/IconWrapper';
 import {
   DEFAULT_PRICELIST_ITEMS,
   TILES_DESCRIPTIONS,
   TILES_DIMENSIONS,
 } from '../constants';
 import type { MutationStatus } from '@tanstack/react-query';
+import IconWrapper from '@/components/IconWrapper/IconWrapper';
 
 type FormColumn = ColumnDef<CreatePriceListItem> & {
   accessorKey: keyof CreatePriceListItem;
@@ -81,22 +79,23 @@ const columns: FormColumn[] = [
 ];
 
 interface CreatePriceListDialogProps {
-  onAddPriceList: (data: CreatePriceList) => void;
-  className: string;
+  handleAddPriceList: (data: CreatePriceList) => void;
+  open: boolean;
   status: MutationStatus;
+  setOpen: (open: boolean) => void;
 }
 
 // The item is a default item if the index is less than the length of the default items
 const isDefaultItem = (index: number) => index < DEFAULT_PRICELIST_ITEMS.length;
 const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
-  onAddPriceList,
-  className,
+  handleAddPriceList,
+  open,
   status,
+  setOpen,
 }) => {
-  const [open, setOpen] = useState(false);
   const form = useFormContext<CreatePriceList>();
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -113,44 +112,18 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
     append({ description: '', dimension: '', price: 0 });
   };
 
-  const handleFormSubmit = (data: CreatePriceList) => {
-    onAddPriceList(data);
-    if (status === 'success') {
-      reset();
-      setOpen(false);
-    }
-  };
-  const handDialogOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen);
-    if (!isOpen) {
-      form.clearErrors();
-      form.reset();
-    }
-  };
-
-  // Clode dialog after creating a pricelist
-  useEffect(() => {
-    if (status === 'success') {
-      setOpen(false);
-    }
-  }, [status]);
   const isPending = status === 'pending';
   return (
-    <Dialog open={open} onOpenChange={handDialogOpenChange}>
-      <DialogTrigger asChild>
-        <Button type="button" className={className}>
-          <IconWrapper name="plus" size="16" className="mr-2" />
-          Add Pricelist
-        </Button>
-      </DialogTrigger>
-
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Create New Pricelist</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          <form
+            onSubmit={handleSubmit(handleAddPriceList)}
+            className="space-y-6">
             <FormField
               control={control}
               name="name"
