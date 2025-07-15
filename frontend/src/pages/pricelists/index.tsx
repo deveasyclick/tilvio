@@ -2,12 +2,12 @@ import {
   PriceListTable,
   PriceListActions,
   PriceListFilters,
-  CreatePriceListDialog,
+  CreateOrEditPriceListDialog,
 } from './components';
 import Pagination from '../../components/Pagination';
 
 import { FormProvider } from 'react-hook-form';
-import { useCreatePricelist, usePriceListTable } from './hooks';
+import { useCreateOrEditPricelist, usePriceListTable } from './hooks';
 import { TableLoader } from '@/components/Loaders';
 
 export default function PriceLists() {
@@ -29,12 +29,15 @@ export default function PriceLists() {
   } = usePriceListTable();
 
   const {
-    handleAddPricelist,
+    handleAddOrEditPricelist,
     createPricelistDialogOpen,
-    setCreatePricelistDialogOpen,
-    createPricelistStatus,
-    createPricelistForm,
-  } = useCreatePricelist();
+    mutationStatus,
+    createOrEditPricelistForm,
+    mode,
+    onEditPricelist,
+    onAddPricelist,
+    handleDialogToggle,
+  } = useCreateOrEditPricelist();
 
   return (
     <div className="p-4">
@@ -42,15 +45,16 @@ export default function PriceLists() {
       <PriceListActions
         selectedCount={selectedPricelists.length}
         onDeleteSelected={handleDeleteSelected}
-        onAddPriceList={() => setCreatePricelistDialogOpen(true)}
+        onAddPriceList={onAddPricelist}
       />
 
-      <FormProvider {...createPricelistForm}>
-        <CreatePriceListDialog
-          handleAddPriceList={handleAddPricelist}
+      <FormProvider {...createOrEditPricelistForm}>
+        <CreateOrEditPriceListDialog
+          handleAddOrEditPriceList={handleAddOrEditPricelist}
           open={createPricelistDialogOpen}
-          setOpen={setCreatePricelistDialogOpen}
-          status={createPricelistStatus}
+          onOpenDialog={handleDialogToggle}
+          status={mutationStatus}
+          mode={mode}
         />
       </FormProvider>
 
@@ -69,6 +73,7 @@ export default function PriceLists() {
             selectedPricelists={selectedPricelists}
             onSelectPricelist={handleSelectPricelists}
             onSelectAll={handleSelectAll}
+            onEditPriceList={onEditPricelist}
           />
         )}
 
