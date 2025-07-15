@@ -38,6 +38,7 @@ const useCreatePricelist = () => {
     if (debouncedFilter.status) params.append('status', debouncedFilter.status);
     params.append('page', String(currentPage));
     params.append('preloads', 'PriceListItems');
+    params.append('sort', 'name');
     return params.toString(); // e.g. size=600X600&page=1
   }, [debouncedFilter, currentPage]);
 
