@@ -42,6 +42,7 @@ import {
 } from '../constants';
 import type { MutationStatus } from '@tanstack/react-query';
 import IconWrapper from '@/components/IconWrapper/IconWrapper';
+import type { CreateOrEditPricelistDialogMode } from '../types';
 
 type FormColumn = ColumnDef<CreatePriceListItem> & {
   accessorKey: keyof CreatePriceListItem;
@@ -79,19 +80,21 @@ const columns: FormColumn[] = [
 ];
 
 interface CreatePriceListDialogProps {
-  handleAddPriceList: (data: CreatePriceList) => void;
+  handleAddOrEditPriceList: (data: CreatePriceList) => void;
   open: boolean;
   status: MutationStatus;
-  setOpen: (open: boolean) => void;
+  onOpenDialog: (open: boolean) => void;
+  mode: CreateOrEditPricelistDialogMode;
 }
 
 // The item is a default item if the index is less than the length of the default items
 const isDefaultItem = (index: number) => index < DEFAULT_PRICELIST_ITEMS.length;
 const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
-  handleAddPriceList,
+  handleAddOrEditPriceList,
   open,
   status,
-  setOpen,
+  onOpenDialog,
+  mode,
 }) => {
   const form = useFormContext<CreatePriceList>();
 
@@ -114,15 +117,17 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
 
   const isPending = status === 'pending';
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenDialog}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Create New Pricelist</DialogTitle>
+          <DialogTitle>
+            {mode === 'create' ? 'Create New Pricelist' : 'Edit Pricelist'}
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form
-            onSubmit={handleSubmit(handleAddPriceList)}
+            onSubmit={handleSubmit(handleAddOrEditPriceList)}
             className="space-y-6">
             <FormField
               control={control}
@@ -208,7 +213,14 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
                                       type="number"
                                       {...field}
                                       placeholder="Enter price"
-                                      value={field.value || ''}
+                                      value={field.value ?? ''}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          e.target.value === ''
+                                            ? ''
+                                            : +e.target.value,
+                                        )
+                                      }
                                     />
                                   ) : null}
                                 </FormControl>
