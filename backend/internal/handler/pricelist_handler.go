@@ -70,7 +70,7 @@ func (h *priceListHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(pricelist); err != nil {
+	if err := json.NewEncoder(w).Encode(types.APIResult{Data: pricelist, Message: "success", Code: http.StatusOK}); err != nil {
 		slog.Warn(error_messages.ErrEncodeResponseFailed, "error", err)
 	}
 }
@@ -78,8 +78,11 @@ func (h *priceListHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (h *priceListHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	filters, err := pagination.ParseFiltersFromQuery(r.URL.Query())
 	if err != nil {
-		slog.Error("Invalid filters", "error", err, "query", r.URL.Query())
-		http.Error(w, "Invalid filters", http.StatusBadRequest)
+		slog.Error(error_messages.ErrInvalidFilter, "error", err, "query", r.URL.Query())
+		httphelper.WriteJSONError(w, error_messages.ErrInvalidFilter, &types.APIERROR{
+			Message: err.Error(),
+			Code:    http.StatusBadRequest,
+		})
 		return
 	}
 	allowedFields := map[string]bool{"name": true}
@@ -95,7 +98,7 @@ func (h *priceListHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	pricelists, total, apiError := h.service.Filter(opts)
 	if apiError != nil {
 		slog.Error(error_messages.ErrFilterPriceList, "error", apiError.Message, "opts", opts)
-		http.Error(w, error_messages.ErrFilterPriceList, http.StatusInternalServerError)
+		httphelper.WriteJSONError(w, error_messages.ErrFilterPriceList, apiError)
 		return
 	}
 
@@ -108,8 +111,7 @@ func (h *priceListHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(types.APIResult{Data: resp, Message: "success", Code: http.StatusOK}); err != nil {
-		slog.Error(errEncodeResponse, "error", err)
-		http.Error(w, errEncodeResponse, http.StatusInternalServerError)
+		slog.Warn(error_messages.ErrEncodeResponseFailed, "error", err)
 	}
 }
 
@@ -125,13 +127,12 @@ func (h *priceListHandler) Update(w http.ResponseWriter, r *http.Request) {
 	existingPriceList, apiError := h.service.Update(uint(id), &req)
 	if apiError != nil {
 		slog.Error(error_messages.ErrUpdatePriceList, "error", apiError.Message, "id", id)
-		http.Error(w, apiError.Message, apiError.Code)
+		httphelper.WriteJSONError(w, error_messages.ErrUpdatePriceList, apiError)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(types.APIResult{Data: existingPriceList, Message: "success", Code: http.StatusOK}); err != nil {
-		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
-		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
+		slog.Warn(error_messages.ErrEncodeResponseFailed, "error", err)
 	}
 }
 
@@ -140,13 +141,12 @@ func (h *priceListHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.Delete(id); err != nil {
 		slog.Error(error_messages.ErrDeletePriceList, "error", err, "id", id)
-		http.Error(w, error_messages.ErrDeletePriceList, http.StatusInternalServerError)
+		httphelper.WriteJSONError(w, error_messages.ErrDeletePriceList, err)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(types.APIResult{Data: map[string]string{"id": id}, Message: "success", Code: http.StatusOK}); err != nil {
-		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
-		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
+		slog.Warn(error_messages.ErrEncodeResponseFailed, "error", err)
 	}
 }
 
@@ -160,13 +160,12 @@ func (h *priceListHandler) BulkDelete(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.BulkDelete(req.IDs); err != nil {
 		slog.Error(error_messages.ErrDeletePriceList, "error", err, "ids", req.IDs)
-		http.Error(w, error_messages.ErrDeletePriceList, http.StatusInternalServerError)
+		httphelper.WriteJSONError(w, error_messages.ErrDeletePriceList, err)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(types.APIResult{Data: map[string][]uint{"ids": req.IDs}, Message: "success", Code: http.StatusOK}); err != nil {
-		slog.Error(error_messages.ErrEncodeResponseFailed, "error", err)
-		http.Error(w, error_messages.ErrEncodeResponseFailed, http.StatusInternalServerError)
+		slog.Warn(error_messages.ErrEncodeResponseFailed, "error", err)
 	}
 }
 func NewPriceListHandler(service service.PriceListService) PriceListHandler {
