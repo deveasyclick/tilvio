@@ -1,9 +1,7 @@
-import { getStatusColor } from '../../../utils/getStatusColor';
 import Table from '../../../components/Table';
-import type { TableColumn } from '../../../components/Table/types';
 import type { PriceList, PriceListSortField } from '@/types/pricelist';
-import type { SortConfig, Status } from '@/types';
-import PriceListItemViewDialog from './PriceListItemViewDialog';
+import type { SortConfig } from '@/types';
+import { useGetTableColumns } from '../hooks';
 
 interface PriceListTableProps {
   pricelists: PriceList[];
@@ -12,36 +10,8 @@ interface PriceListTableProps {
   selectedPricelists: string[];
   onSelectPricelist: (id: string, isSelected: boolean) => void;
   onSelectAll: (isSelected: boolean) => void;
+  onEditPriceList: (pricelist: PriceList) => void;
 }
-
-const columns: TableColumn<PriceList, PriceListSortField>[] = [
-  {
-    id: 'name',
-    header: 'Name',
-    sortable: true,
-    accessor: (pricelist) => pricelist.name,
-  },
-  {
-    id: 'status',
-    header: 'Status',
-    sortable: true,
-    accessor: (pricelist) => (
-      <div className="flex items-center">
-        <div
-          className={`h-2.5 w-2.5 rounded-full ${getStatusColor(pricelist.status as Status)} mr-2`}></div>
-        <span className="capitalize">{pricelist.status}</span>
-      </div>
-    ),
-  },
-  {
-    id: 'priceListItems',
-    header: 'Price Lists',
-    sortable: false,
-    accessor: (pricelist) => (
-      <PriceListItemViewDialog priceListItems={pricelist.priceListItems} />
-    ),
-  },
-];
 
 const PriceListTable: React.FC<PriceListTableProps> = ({
   pricelists,
@@ -50,7 +20,9 @@ const PriceListTable: React.FC<PriceListTableProps> = ({
   selectedPricelists,
   onSelectPricelist,
   onSelectAll,
+  onEditPriceList,
 }) => {
+  const columns = useGetTableColumns({ onEditPriceList });
   return (
     <Table
       data={pricelists}
