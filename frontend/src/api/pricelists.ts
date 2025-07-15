@@ -4,6 +4,7 @@ import { getConfig } from '../config';
 import { HTTP_METHODS } from '../types/http';
 import type {
   FilterPriceListResponse,
+  PriceList,
   PriceListResponse,
 } from '@/types/pricelist';
 import type { CreatePriceList } from '@/schemas/pricelists';
@@ -42,6 +43,18 @@ export const useAddPriceList = () => {
     mutationFn: (priceList: Partial<CreatePriceList>) =>
       fetchWithAuth<CreatePriceList>(API_URL, {
         method: 'POST',
+        body: JSON.stringify(priceList),
+      }),
+  });
+};
+
+export const useEditPriceList = () => {
+  const { fetchWithAuth } = useFetchWithAuth();
+
+  return useMutation({
+    mutationFn: (priceList: Partial<PriceList>) =>
+      fetchWithAuth<Partial<PriceList>>(`${API_URL}/${priceList.id}`, {
+        method: 'PUT',
         body: JSON.stringify(priceList),
       }),
   });
