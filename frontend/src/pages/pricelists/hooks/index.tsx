@@ -1,2 +1,3 @@
 export { default as usePriceListTable } from './usePriceListTable';
-export { default as useCreatePricelist } from './useCreatePricelist';
+export { default as useCreateOrEditPricelist } from './useCreateOrEditPricelist';
+export { default as useGetTableColumns } from './useGetTableColumns';
