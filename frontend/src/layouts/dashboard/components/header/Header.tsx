@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import AppsDropdown from '../dropdowns/Apps/AppsDropdown';
 import NotificationsDropdown from '../dropdowns/Notifications/NotificationsDropdown';
 import UserMenuDropdown from '../dropdowns/UserMenu/UserMenuDropdown';
 import { DEFAULT_IMAGES } from '../../../../constants/images';
@@ -62,12 +61,6 @@ const DashboardHeader = ({
     );
   }, []);
 
-  // Memoized handlers for each dropdown
-  const handleToggleApps = useCallback(
-    () => toggleDropdown('apps'),
-    [toggleDropdown],
-  );
-
   const handleToggleNotifications = useCallback(
     () => toggleDropdown('notifications'),
     [toggleDropdown],
@@ -118,18 +111,6 @@ const DashboardHeader = ({
           </HeaderButton>
           <NotificationsDropdown
             isOpen={activeDropdown === 'notifications'}
-            onClose={closeDropdown}
-          />
-
-          <HeaderButton
-            ariaControls="apps-dropdown"
-            ariaExpanded={activeDropdown === 'apps'}
-            onClick={handleToggleApps}>
-            <span className="sr-only">View Apps</span>
-            <IconWrapper name="apps" />
-          </HeaderButton>
-          <AppsDropdown
-            isOpen={activeDropdown === 'apps'}
             onClose={closeDropdown}
           />
 
