@@ -86,7 +86,7 @@ func (s *priceListService) Create(createPriceListReq *types.CreatePriceListReque
 }
 
 func (s *priceListService) Update(ID uint, updatePriceListRequest *types.UpdatePriceListRequest) (pricelist *models.PriceList, apiError *types.APIERROR) {
-	existingPriceList, err := s.repo.FindOneWithFields([]string{"id"}, map[string]any{"id": ID})
+	existingPriceList, err := s.repo.FindOneWithFields([]string{}, map[string]any{"id": ID})
 	if err != nil {
 		return nil, &types.APIERROR{Message: error_messages.ErrPriceListNotFound, Code: http.StatusNotFound}
 	}
@@ -95,6 +95,20 @@ func (s *priceListService) Update(ID uint, updatePriceListRequest *types.UpdateP
 	if updatePriceListRequest.Name != "" {
 		existingPriceList.Name = updatePriceListRequest.Name
 	}
+
+	priceListItems := make([]models.PriceListItem, 0, len(updatePriceListRequest.PriceListItems))
+
+	for _, item := range updatePriceListRequest.PriceListItems {
+		priceListItems = append(priceListItems, models.PriceListItem{
+			Description: item.Description,
+			Dimension:   item.Dimension,
+			Price:       item.Price,
+			WorkspaceID: existingPriceList.WorkspaceID,
+			PriceListID: existingPriceList.ID,
+		})
+	}
+
+	existingPriceList.PriceListItems = priceListItems
 
 	err = s.repo.Update(ID, existingPriceList)
 	if err != nil {

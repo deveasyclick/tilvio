@@ -45,7 +45,15 @@ func (r *priceListRepository) Create(priceList *models.PriceList) error {
 }
 
 func (r *priceListRepository) Update(ID uint, priceList *models.PriceList) error {
-	return r.db.Where(whereID, ID).Updates(priceList).Error
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&models.PriceList{}).Where("id = ?", ID).Updates(priceList).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(priceList).Association("PriceListItems").Replace(priceList.PriceListItems); err != nil {
+			return err
+		}
+		return nil
+	})
 }
 func (r *priceListRepository) DeleteByID(ID string) error {
 	return r.db.Where(whereID, ID).Delete(&models.PriceList{}).Error
