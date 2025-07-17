@@ -118,7 +118,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
   const isPending = status === 'pending';
   return (
     <Dialog open={open} onOpenChange={onOpenDialog}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {mode === 'create' ? 'Create New Pricelist' : 'Edit Pricelist'}
