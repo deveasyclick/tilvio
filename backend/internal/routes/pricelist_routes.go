@@ -24,8 +24,10 @@ func registerPriceListRoutes(router chi.Router, db *gorm.DB) {
 		// Get pricelist by ID
 		r.With(middleware.ValidatePriceListId(db)).Get("/{id}", priceListHandler.Get)
 
-		// Update pricelist by ID
+		// TODO: to be removed
 		r.With(middleware.ValidatePriceListId(db)).Patch("/{id}", priceListHandler.Update)
+		// Update pricelist by ID
+		r.With(middleware.ValidatePriceListId(db)).Put("/{id}", priceListHandler.Update)
 
 		// Delete pricelist by ID
 		r.With(middleware.ValidatePriceListId(db)).Delete("/{id}", priceListHandler.Delete)
