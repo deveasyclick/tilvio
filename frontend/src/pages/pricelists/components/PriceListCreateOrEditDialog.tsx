@@ -112,7 +112,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
   });
 
   const handleAddItem = () => {
-    append({ description: '', dimension: '', price: 0 });
+    append(DEFAULT_PRICELIST_ITEMS[0]);
   };
 
   const isPending = status === 'pending';
@@ -191,7 +191,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
                                       {TILES_DIMENSIONS.map((dimension) => (
                                         <option
                                           key={dimension}
-                                          value={field.value}>
+                                          value={dimension}>
                                           {dimension}
                                         </option>
                                       ))}
@@ -203,7 +203,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
                                       {TILES_DESCRIPTIONS.map((description) => (
                                         <option
                                           key={description}
-                                          value={field.value}>
+                                          value={description}>
                                           {description}
                                         </option>
                                       ))}
