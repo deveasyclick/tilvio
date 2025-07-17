@@ -7,11 +7,14 @@ const (
 	ErrParseID               = "failed to parse ID"
 	ErrInvalidRequestPayload = "invalid request payload"
 	ErrRequestFailed         = "request failed, try again later"
+	ErrInvalidFilter         = "invalid filter"
+
 	// priceList
 	ErrPriceListExists   = "priceList already exists"
 	ErrPriceListNotFound = "priceList not found"
 	ErrCreatePriceList   = "error creating priceList"
 	ErrDeletePriceList   = "error deleting priceList"
+	ErrDeletePriceLists  = "error deleting priceLists"
 	ErrUpdatePriceList   = "error updating priceList"
 	ErrFindPriceList     = "error finding priceList"
 	ErrFilterPriceList   = "error filtering priceList"

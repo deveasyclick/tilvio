@@ -21,6 +21,7 @@ type PriceListService interface {
 	Filter(opts pagination.Options) ([]models.PriceList, int64, *types.APIERROR)
 	FindOne(ID uint) (*models.PriceList, *types.APIERROR)
 	Exists(ID uint) (bool, *types.APIERROR)
+	BulkDelete(IDs []uint) *types.APIERROR
 }
 
 type priceListService struct {
@@ -40,7 +41,7 @@ func (s *priceListService) Create(createPriceListReq *types.CreatePriceListReque
 	// Check if priceList name already exists
 	existing, err := s.repo.FindOneWithFields([]string{"name"}, map[string]any{"name": createPriceListReq.Name})
 	if err != nil && err != gorm.ErrRecordNotFound {
-		slog.Error(error_messages.ErrFindPriceList, "error", err, "name", createPriceListReq.Name)
+		slog.Error(error_messages.ErrCreatePriceList, "error", err, "name", createPriceListReq.Name)
 		return nil, &types.APIERROR{Message: error_messages.ErrCreatePriceList, Code: http.StatusInternalServerError}
 	}
 
@@ -60,6 +61,7 @@ func (s *priceListService) Create(createPriceListReq *types.CreatePriceListReque
 			Price:       priceListItem.Price,
 			Dimension:   priceListItem.Dimension,
 			WorkspaceID: uint(workspaceID),
+			Description: priceListItem.Description,
 		})
 	}
 
@@ -84,7 +86,7 @@ func (s *priceListService) Create(createPriceListReq *types.CreatePriceListReque
 }
 
 func (s *priceListService) Update(ID uint, updatePriceListRequest *types.UpdatePriceListRequest) (pricelist *models.PriceList, apiError *types.APIERROR) {
-	existingPriceList, err := s.repo.FindOneWithFields([]string{"id"}, map[string]any{"id": ID})
+	existingPriceList, err := s.repo.FindOneWithFields([]string{}, map[string]any{"id": ID})
 	if err != nil {
 		return nil, &types.APIERROR{Message: error_messages.ErrPriceListNotFound, Code: http.StatusNotFound}
 	}
@@ -93,6 +95,20 @@ func (s *priceListService) Update(ID uint, updatePriceListRequest *types.UpdateP
 	if updatePriceListRequest.Name != "" {
 		existingPriceList.Name = updatePriceListRequest.Name
 	}
+
+	priceListItems := make([]models.PriceListItem, 0, len(updatePriceListRequest.PriceListItems))
+
+	for _, item := range updatePriceListRequest.PriceListItems {
+		priceListItems = append(priceListItems, models.PriceListItem{
+			Description: item.Description,
+			Dimension:   item.Dimension,
+			Price:       item.Price,
+			WorkspaceID: existingPriceList.WorkspaceID,
+			PriceListID: existingPriceList.ID,
+		})
+	}
+
+	existingPriceList.PriceListItems = priceListItems
 
 	err = s.repo.Update(ID, existingPriceList)
 	if err != nil {
@@ -138,6 +154,15 @@ func (s *priceListService) Exists(ID uint) (bool, *types.APIERROR) {
 		return false, &types.APIERROR{Message: error_messages.ErrPriceListNotFound, Code: http.StatusNotFound}
 	}
 	return true, nil
+}
+
+func (s *priceListService) BulkDelete(IDs []uint) *types.APIERROR {
+	err := s.repo.BulkDeleteByIds(IDs)
+	if err != nil {
+		slog.Error(error_messages.ErrDeletePriceLists, "error", err)
+		return &types.APIERROR{Message: error_messages.ErrDeletePriceLists, Code: http.StatusInternalServerError}
+	}
+	return nil
 }
 
 func NewPriceListService(repo repository.PriceListRepository) PriceListService {

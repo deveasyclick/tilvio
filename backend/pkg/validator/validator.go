@@ -3,9 +3,11 @@ package validator
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 
+	"github.com/deveasyclick/tilvio/pkg/tile"
 	"github.com/deveasyclick/tilvio/pkg/types"
 	"github.com/go-playground/validator/v10"
 )
@@ -18,6 +20,10 @@ func init() {
 	err := validate.RegisterValidation("uniqueDimension", uniqueDimension)
 	if err != nil {
 		slog.Error("failed to register uniqueDimension validation", "error", err)
+	}
+	err = validate.RegisterValidation("isValidDesc", isValidDescription)
+	if err != nil {
+		slog.Error("failed to register isValidDesc validation", "error", err)
 	}
 }
 
@@ -33,15 +39,29 @@ func uniqueDimension(fl validator.FieldLevel) bool {
 		return false // wrong type
 	}
 
-	seen := make(map[string]bool)
+	seen := make(map[string]map[string]bool)
 	for _, item := range items {
-		if seen[item.Dimension] {
+		if seen[item.Dimension] == nil {
+			seen[item.Dimension] = make(map[string]bool)
+		}
+		if seen[item.Dimension][item.Description] {
 			return false // duplicate found
 		}
-		seen[item.Dimension] = true
+		seen[item.Dimension][item.Description] = true
 	}
 
 	return true
+}
+
+// Ensure that the description is valid
+func isValidDescription(fl validator.FieldLevel) bool {
+	desc := fl.Field().String()
+	for _, d := range tile.Descriptions {
+		if d == desc {
+			return true
+		}
+	}
+	return false
 }
 
 func ValidateRequest(r *http.Request, req interface{}) []ValidationError {
@@ -63,7 +83,7 @@ func ValidateRequest(r *http.Request, req interface{}) []ValidationError {
 				validationErrors = append(validationErrors, ValidationError{
 					Field: err.Field(),
 					Tag:   err.Tag(),
-					Value: err.Param(),
+					Value: fmt.Sprintf("%v", err.Value()),
 				})
 			}
 		}
