@@ -93,11 +93,6 @@ const DashboardHeader = ({
           <Logo imageSrc={logoSrc} imageAlt={logoAlt} text={logoText} />
         </section>
         <section className="flex items-center lg:order-2">
-          <HeaderButton ariaControls="mobile-search" className="md:hidden">
-            <span className="sr-only">Toggle search</span>
-            <IconWrapper name="search" aria-hidden="true" />
-          </HeaderButton>
-
           <ThemeToggle className="mr-2" />
 
           <HeaderButton
