@@ -191,7 +191,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
                                       {TILES_DIMENSIONS.map((dimension) => (
                                         <option
                                           key={dimension}
-                                          value={field.value}>
+                                          value={dimension}>
                                           {dimension}
                                         </option>
                                       ))}
@@ -203,7 +203,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
                                       {TILES_DESCRIPTIONS.map((description) => (
                                         <option
                                           key={description}
-                                          value={field.value}>
+                                          value={description}>
                                           {description}
                                         </option>
                                       ))}
