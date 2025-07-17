@@ -13,7 +13,8 @@ type CreatePriceListRequest struct {
 }
 
 type UpdatePriceListRequest struct {
-	Name string `json:"name" validate:"required,min=10"`
+	Name           string                      `json:"name" validate:"required,min=5"`
+	PriceListItems []CreatPriceListItemRequest `json:"price_list_items" validate:"required,min=1,uniqueDimension,dive"`
 }
 
 type BulkDeletePriceListRequest struct {
