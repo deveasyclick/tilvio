@@ -112,7 +112,7 @@ const CreatePriceListDialog: React.FC<CreatePriceListDialogProps> = ({
   });
 
   const handleAddItem = () => {
-    append({ description: '', dimension: '', price: 0 });
+    append(DEFAULT_PRICELIST_ITEMS[0]);
   };
 
   const isPending = status === 'pending';
