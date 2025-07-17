@@ -7,7 +7,6 @@ import { useSidebar } from '../../../../contexts/sidebar/context';
 import IconWrapper from '../../../../components/IconWrapper/IconWrapper';
 import ThemeToggle from '../../../../components/ThemeToggle';
 import Image from '../../../../components/Image';
-import SearchForm from '../../../components/SearchForm';
 import Logo from '../../../components/Logo';
 
 export type DashboardHeaderProps = {
@@ -92,7 +91,6 @@ const DashboardHeader = ({
             <span className="sr-only">Toggle sidebar</span>
           </HeaderButton>
           <Logo imageSrc={logoSrc} imageAlt={logoAlt} text={logoText} />
-          <SearchForm />
         </section>
         <section className="flex items-center lg:order-2">
           <HeaderButton ariaControls="mobile-search" className="md:hidden">
