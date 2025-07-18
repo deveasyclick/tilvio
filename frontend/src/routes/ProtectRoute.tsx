@@ -1,6 +1,8 @@
-import { useUser } from '@clerk/clerk-react';
+import { useClerk, useUser } from '@clerk/clerk-react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useFetchAuthenticatedDistributor } from '../api/distributor';
+import type { APIError } from '@/utils/apiError';
+import { useErrorToast } from '@/hooks';
 
 const CustomError = ({ refresh }: { refresh: () => void }) => {
   return (
@@ -28,16 +30,28 @@ const ProtectRoutes = () => {
     error,
     refetch,
   } = useFetchAuthenticatedDistributor();
-
+  const { signOut } = useClerk();
+  const errorToast = useErrorToast();
+  const apiError = error as APIError;
   if (!isLoaded || isLoading) return <div>Loading...</div>;
 
   if (!isSignedIn) {
     return <Navigate to="/signin" replace />;
   }
 
-  if (isError) {
+  if (isError && !isSignedIn) {
     console.log('error fetching distributor', error);
     return <CustomError refresh={refetch} />;
+  }
+
+  if (isError && isSignedIn && apiError.status === 404) {
+    errorToast({
+      title: 'Error',
+      description: 'User not found.',
+    });
+    // Sign out user
+    signOut();
+    return;
   }
 
   const onboardingPath = '/workspaces/onboarding';
