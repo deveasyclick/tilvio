@@ -1,4 +1,5 @@
-export type Workspace = {
+export interface Workspace {
+  id: number;
   name: string;
   organizationName: string;
   organizationUrl: string;
@@ -10,4 +11,4 @@ export type Workspace = {
   address: string;
   logo: string;
   onboardedAt: string;
-};
+}
