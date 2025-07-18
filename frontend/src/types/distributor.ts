@@ -15,5 +15,6 @@ export interface Distributor {
   city?: string;
   address?: string;
   role: Role;
+  workspaceId: string;
   workspace?: Workspace;
 }

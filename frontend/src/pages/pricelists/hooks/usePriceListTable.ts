@@ -1,3 +1,4 @@
+import { useFetchAuthenticatedDistributor } from '@/api/distributor';
 import { useDeletePriceLists, useFilterPriceLists } from '@/api/pricelists';
 import { useErrorToast } from '@/hooks';
 import useDebounce from '@/hooks/useDebounce';
@@ -20,6 +21,7 @@ const DEFAULT_SORT: PriceListSortConfig = {
 };
 
 const useCreatePricelist = () => {
+  const { data: distributor } = useFetchAuthenticatedDistributor();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPricelists, setSelectedPricelists] = useState<string[]>([]);
   const [filters, setFiltersState] = useState<PriceListFilter>(DEFAULT_FILTERS);
@@ -39,8 +41,10 @@ const useCreatePricelist = () => {
     params.append('page', String(currentPage));
     params.append('preloads', 'PriceListItems');
     params.append('sort', 'created_at desc');
+    if (distributor?.workspaceId)
+      params.append('workspace_id', distributor?.workspaceId.toString());
     return params.toString(); // e.g. size=600X600&page=1
-  }, [debouncedFilter, currentPage]);
+  }, [debouncedFilter, currentPage, distributor?.workspaceId]);
 
   const { data, isLoading } = useFilterPriceLists(queryString);
   const { mutate: deletePricelists } = useDeletePriceLists();
