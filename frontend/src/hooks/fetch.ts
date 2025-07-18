@@ -1,5 +1,6 @@
 import { useAuth } from '@clerk/clerk-react';
 import getValidationErrorMessage from '../utils/getValidationErrorMessage';
+import { APIError } from '@/utils/apiError';
 
 export function useFetchWithAuth() {
   const { getToken } = useAuth();
@@ -32,12 +33,12 @@ export function useFetchWithAuth() {
         }
         // Handle validation errors (e.g., show in UI or set form errors)
         console.warn('Validation Errors:', fieldErrors);
-        throw new Error(`Validation failed: ${JSON.stringify(fieldErrors)}`);
+        throw new APIError('Validation failed', response.status, fieldErrors);
       }
 
       // Generic server error with message
       if (errorJson.message) {
-        throw new Error(errorJson.message);
+        throw new APIError(errorJson.message, response.status);
       }
 
       // Fallback for unknown errors
