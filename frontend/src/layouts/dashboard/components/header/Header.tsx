@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import NotificationsDropdown from '../dropdowns/Notifications/NotificationsDropdown';
 import UserMenuDropdown from '../dropdowns/UserMenu/UserMenuDropdown';
 import { DEFAULT_IMAGES } from '../../../../constants/images';
 import HeaderButton from './HeaderButton';
@@ -60,10 +59,10 @@ const DashboardHeader = ({
     );
   }, []);
 
-  const handleToggleNotifications = useCallback(
-    () => toggleDropdown('notifications'),
-    [toggleDropdown],
-  );
+  // const handleToggleNotifications = useCallback(
+  //   () => toggleDropdown('notifications'),
+  //   [toggleDropdown],
+  // );
 
   const handleToggleUserMenu = useCallback(
     () => toggleDropdown('userMenu'),
@@ -95,7 +94,8 @@ const DashboardHeader = ({
         <section className="flex items-center lg:order-2">
           <ThemeToggle className="mr-2" />
 
-          <HeaderButton
+          {/*Hide Notification Icon*/}
+          {/*<HeaderButton
             ariaControls="notification-dropdown"
             ariaExpanded={activeDropdown === 'notifications'}
             onClick={handleToggleNotifications}>
@@ -105,7 +105,7 @@ const DashboardHeader = ({
           <NotificationsDropdown
             isOpen={activeDropdown === 'notifications'}
             onClose={closeDropdown}
-          />
+          />*/}
 
           <HeaderButton
             ariaControls="user-menu-dropdown"
