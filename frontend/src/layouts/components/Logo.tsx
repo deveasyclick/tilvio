@@ -14,8 +14,8 @@ export type LogoProps = {
 const Logo = memo(
   ({
     imageSrc = DEFAULT_IMAGES.LOGO,
-    imageAlt = 'React Tailwind Dashboard With Sidebar ',
-    text = 'Dashboard',
+    imageAlt = 'Tilvio',
+    text = 'Tilvio',
   }: LogoProps) => (
     <a href="#" className="flex items-center justify-between mr-4">
       <Image

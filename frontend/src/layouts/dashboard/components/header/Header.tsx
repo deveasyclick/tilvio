@@ -1,6 +1,4 @@
 import { useCallback, useState } from 'react';
-import AppsDropdown from '../dropdowns/Apps/AppsDropdown';
-import NotificationsDropdown from '../dropdowns/Notifications/NotificationsDropdown';
 import UserMenuDropdown from '../dropdowns/UserMenu/UserMenuDropdown';
 import { DEFAULT_IMAGES } from '../../../../constants/images';
 import HeaderButton from './HeaderButton';
@@ -8,7 +6,6 @@ import { useSidebar } from '../../../../contexts/sidebar/context';
 import IconWrapper from '../../../../components/IconWrapper/IconWrapper';
 import ThemeToggle from '../../../../components/ThemeToggle';
 import Image from '../../../../components/Image';
-import SearchForm from '../../../components/SearchForm';
 import Logo from '../../../components/Logo';
 
 export type DashboardHeaderProps = {
@@ -62,16 +59,10 @@ const DashboardHeader = ({
     );
   }, []);
 
-  // Memoized handlers for each dropdown
-  const handleToggleApps = useCallback(
-    () => toggleDropdown('apps'),
-    [toggleDropdown],
-  );
-
-  const handleToggleNotifications = useCallback(
-    () => toggleDropdown('notifications'),
-    [toggleDropdown],
-  );
+  // const handleToggleNotifications = useCallback(
+  //   () => toggleDropdown('notifications'),
+  //   [toggleDropdown],
+  // );
 
   const handleToggleUserMenu = useCallback(
     () => toggleDropdown('userMenu'),
@@ -99,17 +90,12 @@ const DashboardHeader = ({
             <span className="sr-only">Toggle sidebar</span>
           </HeaderButton>
           <Logo imageSrc={logoSrc} imageAlt={logoAlt} text={logoText} />
-          <SearchForm />
         </section>
         <section className="flex items-center lg:order-2">
-          <HeaderButton ariaControls="mobile-search" className="md:hidden">
-            <span className="sr-only">Toggle search</span>
-            <IconWrapper name="search" aria-hidden="true" />
-          </HeaderButton>
-
           <ThemeToggle className="mr-2" />
 
-          <HeaderButton
+          {/*Hide Notification Icon*/}
+          {/*<HeaderButton
             ariaControls="notification-dropdown"
             ariaExpanded={activeDropdown === 'notifications'}
             onClick={handleToggleNotifications}>
@@ -119,19 +105,7 @@ const DashboardHeader = ({
           <NotificationsDropdown
             isOpen={activeDropdown === 'notifications'}
             onClose={closeDropdown}
-          />
-
-          <HeaderButton
-            ariaControls="apps-dropdown"
-            ariaExpanded={activeDropdown === 'apps'}
-            onClick={handleToggleApps}>
-            <span className="sr-only">View Apps</span>
-            <IconWrapper name="apps" />
-          </HeaderButton>
-          <AppsDropdown
-            isOpen={activeDropdown === 'apps'}
-            onClose={closeDropdown}
-          />
+          />*/}
 
           <HeaderButton
             ariaControls="user-menu-dropdown"
