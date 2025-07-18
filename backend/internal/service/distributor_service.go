@@ -3,9 +3,12 @@ package service
 import (
 	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/deveasyclick/tilvio/internal/models"
 	"github.com/deveasyclick/tilvio/internal/repository"
+	"github.com/deveasyclick/tilvio/pkg/types"
+	"gorm.io/gorm"
 )
 
 const (
@@ -22,7 +25,7 @@ type DistributorService interface {
 	UpdateDistributor(ID string, distributor *models.Distributor) error
 	DeleteDistributor(id string) error
 	GetDistributorByEmail(email string) (*models.Distributor, error)
-	GetDistributorByID(ID string, preloads []string) (*models.Distributor, error)
+	GetDistributorByID(ID string, preloads []string) (*models.Distributor, *types.APIERROR)
 	AssignWorkspace(distributorID string, workspaceID uint) error
 }
 
@@ -73,10 +76,22 @@ func (s *distributorService) GetDistributorByEmail(email string) (*models.Distri
 	return distributor, nil
 }
 
-func (s *distributorService) GetDistributorByID(ID string, preloads []string) (*models.Distributor, error) {
+func (s *distributorService) GetDistributorByID(ID string, preloads []string) (*models.Distributor, *types.APIERROR) {
 	distributor, err := s.repo.FindOneWithFields(map[string]any{"id": ID}, nil, preloads)
 	if err != nil {
-		return nil, fmt.Errorf(errFormat, errFindDistributor, err)
+		if err == gorm.ErrRecordNotFound {
+			return nil,
+				&types.APIERROR{
+					Message: err.Error(),
+					Code:    http.StatusNotFound,
+				}
+		}
+
+		return nil,
+			&types.APIERROR{
+				Message: err.Error(),
+				Code:    http.StatusInternalServerError,
+			}
 	}
 
 	return distributor, nil
