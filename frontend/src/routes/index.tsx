@@ -12,6 +12,7 @@ import MainLayout from '../layouts/main';
 import ProtectRoutes from './ProtectRoute';
 import QueryProvider from '../providers/QueryProvider';
 import Tiles from '../pages/tiles';
+import Orders from '@/pages/orders';
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
                 <Route index element={<DashboardHome />} />
                 <Route path="pricelists" element={<PriceLists />} />
                 <Route path="tiles" element={<Tiles />} />
+                <Route path="orders" element={<Orders />} />
               </Route>
             </Route>
           </Routes>
