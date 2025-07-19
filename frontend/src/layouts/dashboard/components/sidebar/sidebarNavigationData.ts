@@ -31,16 +31,6 @@ export const sidebarNavItems: SidebarNavItemData[] = [
     iconName: 'dollar',
   },
   {
-    id: 'loans',
-    label: 'Loans',
-    href: '/loans',
-    iconName: 'collection',
-    badge: {
-      text: '3',
-      variant: 'primary',
-    },
-  },
-  {
     id: 'tiles',
     label: 'Tiles',
     href: '/tiles',
