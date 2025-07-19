@@ -44,6 +44,7 @@ import {
   Loader2,
   LayoutGrid,
   DollarSign,
+  TruckIcon,
 } from 'lucide-react';
 
 export const Icons = {
@@ -90,4 +91,5 @@ export const Icons = {
   loader: Loader2,
   grid: LayoutGrid,
   dollar: DollarSign,
+  truck: TruckIcon,
 };
