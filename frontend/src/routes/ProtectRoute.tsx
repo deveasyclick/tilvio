@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router';
 import { useFetchAuthenticatedDistributor } from '../api/distributor';
 import type { APIError } from '@/utils/apiError';
 import { useErrorToast } from '@/hooks';
+import { PageLoader } from '@/components/Loaders';
 
 const CustomError = ({ refresh }: { refresh: () => void }) => {
   return (
@@ -33,7 +34,7 @@ const ProtectRoutes = () => {
   const { signOut } = useClerk();
   const errorToast = useErrorToast();
   const apiError = error as APIError;
-  if (!isLoaded || isLoading) return <div>Loading...</div>;
+  if (!isLoaded || isLoading) return <PageLoader />;
 
   if (!isSignedIn) {
     return <Navigate to="/signin" replace />;
