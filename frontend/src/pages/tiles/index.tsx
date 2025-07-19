@@ -7,6 +7,7 @@ import useToggleState from '@/hooks/useToggleState';
 import type { TileFilters as TileFiltersType } from '@/types/tile';
 import useDebounce from '@/hooks/useDebounce';
 import { useFindAllManufacturers } from '@/api/manufacturers';
+import { PageLoader } from '@/components/Loaders';
 
 const DEFAULT_FILTERS: TileFiltersType = {
   search: '',
@@ -54,7 +55,7 @@ export default function Tiles() {
     setCurrentPage(1);
   }, []);
   const { data: manufacturers } = useFindAllManufacturers();
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <PageLoader />;
   return (
     <section>
       <TileFilters
