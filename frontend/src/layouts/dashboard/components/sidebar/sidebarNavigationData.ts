@@ -36,4 +36,10 @@ export const sidebarNavItems: SidebarNavItemData[] = [
     href: '/tiles',
     iconName: 'grid',
   },
+  {
+    id: 'orders',
+    label: 'Orders',
+    href: '/orders',
+    iconName: 'truck',
+  },
 ];
